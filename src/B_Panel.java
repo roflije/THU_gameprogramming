@@ -56,6 +56,13 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 		graphics.drawString(text.toString(), (int) text.x, (int) text.y);
 	}
 
+	public final void draw(A_Square sq) {
+		graphics.setColor(Color.BLACK);
+		graphics.drawLine(sq.getsX(),sq.getsY(),sq.geteX(),sq.getsY());
+		graphics.drawLine(sq.getsX(),sq.geteY(),sq.geteX(),sq.geteY());
+		graphics.drawLine(sq.getsX(), sq.getsY(), sq.getsX(), sq.geteY());
+		graphics.drawLine(sq.geteX(), sq.getsY(), sq.geteX(), sq.geteY());
+	}
 	public void redraw() {
 		this.getGraphics().drawImage(imageBuffer, 0, 0, this);
 	}

@@ -5,32 +5,29 @@ abstract class A_World {
 	private A_PhysicsSystem physicsSystem;
 	private A_InputSystem inputSystem;
 	private A_UserInput userInput;
-
+	private boolean isBuilding = true;
 	private static final int FRAME_MINIMUM_MILLIS = 10;
 
 	// all objects in the game, including the Avatar
 	A_GameObjectList gameObjects = new A_GameObjectList();
 	A_GameObject avatar;
 	ArrayList<A_TextObject> textObjects = new ArrayList<A_TextObject>();
-
+	ArrayList<A_Square> squareObjects = new ArrayList<A_Square>();
+	
 	A_World() {
 		physicsSystem = new TD_PhysicsSystem(this);
 	}
 
-	//
 	// the main GAME LOOP
-	//
 	final void run() {
 		long lastTick = System.currentTimeMillis();
 
 		while (true) {
 			// calculate elapsed time
-			//
 			long currentTick = System.currentTimeMillis();
 			long millisDiff = currentTick - lastTick;
 
 			// don´t run faster then MINIMUM_DIFF_SECONDS per frame
-			//
 			if (millisDiff < FRAME_MINIMUM_MILLIS) {
 				try {
 					Thread.sleep(FRAME_MINIMUM_MILLIS - millisDiff);
@@ -71,7 +68,12 @@ abstract class A_World {
 			for (int i = 0; i < gameSize; i++) {
 				graphicSystem.draw(gameObjects.get(i));
 			}
-
+			if(isBuilding) {
+				int howManySquares = squareObjects.size();
+				for(int i = 0 ; i < howManySquares ; ++i) {
+					graphicSystem.draw(squareObjects.get(i));
+				}
+			}
 			// draw all TextObjects
 			for (int i = 0; i < textObjects.size(); i++) {
 				graphicSystem.draw(textObjects.get(i));

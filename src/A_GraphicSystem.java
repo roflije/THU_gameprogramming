@@ -5,5 +5,7 @@ interface A_GraphicSystem {
 
 	void draw(A_TextObject obj);
 
+	void draw(A_Square sq);
+	
 	void redraw();
 }
