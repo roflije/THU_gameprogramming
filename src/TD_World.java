@@ -72,8 +72,8 @@ class TD_World extends A_World {
 		// Keyboard events
 		//
 		if (userInput.isKeyEvent) {
-			if (userInput.keyPressed == ' ') {
-				//throwGrenade(userInput.mouseMovedX, userInput.mouseMovedY);
+			if (userInput.keyPressed == '2') {
+				toggleBuilding();
 			}
 		}
 	}
