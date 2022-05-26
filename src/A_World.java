@@ -5,7 +5,7 @@ abstract class A_World {
 	private A_PhysicsSystem physicsSystem;
 	private A_InputSystem inputSystem;
 	private A_UserInput userInput;
-	protected boolean isBuilding = true;
+	protected boolean isBuilding = false;
 	private static final int FRAME_MINIMUM_MILLIS = 10;
 
 	// all objects in the game, including the Avatar

@@ -29,7 +29,7 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 	}
 
 	public void clear() {
-		graphics.setColor(Color.LIGHT_GRAY);
+		graphics.setColor(new Color(153,255,153));
 		graphics.fillRect(0, 0, A_Const.WIDTH, A_Const.HEIGHT);
 	}
 

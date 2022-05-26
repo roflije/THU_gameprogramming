@@ -3,7 +3,7 @@ class TD_World extends A_World {
 	private double timeSinceLastShot = 0;
 
 	private TD_CounterHealth counterH;
-	private TD_Counter counterZ;
+	private TD_Counter counterC;
 	private TD_HelpText helpText;
 	private double spawnGrenade = 0;
 
@@ -13,29 +13,20 @@ class TD_World extends A_World {
 		for(int x = 0 ; x <= A_Const.WIDTH ; x = x+40) {
 			for(int y = 0 ; y <= A_Const.HEIGHT ; y = y+40) {
 				squareObjects.add(new A_Square(x, y, x+40, y+40));
-				System.out.println(squareObjects.get(squareObjects.size()-1).toString());
 			}
 		}
 		// add the Avatar
 		avatar = new TD_Avatar(400, 500);
 		gameObjects.add(avatar);
 
-		// add a little forrest
-		gameObjects.add(new TD_Turret(300, 200, 80));
-		gameObjects.add(new TD_Turret(600, 370, 50));
-		gameObjects.add(new TD_Turret(200, 600, 50));
-		gameObjects.add(new TD_Turret(500, 600, 40));
-		gameObjects.add(new TD_Turret(800, 500, 60));
-		gameObjects.add(new TD_Turret(760, 160, 40));
-
 		// add one zombie
-		gameObjects.add(new TD_AlienAI(100, 100));
+		//gameObjects.add(new TD_AlienAI(100, 100));
 
-		counterZ = new TD_Counter(20, 40);
-		counterH = new TD_CounterHealth(770, 40);
+		counterC = new TD_Counter(20, 80);
+		counterH = new TD_CounterHealth(20, 40);
 		helpText = new TD_HelpText(100, 400);
 
-		textObjects.add(counterZ);
+		textObjects.add(counterC);
 		textObjects.add(counterH);
 		textObjects.add(helpText);
 	}
@@ -48,9 +39,18 @@ class TD_World extends A_World {
 		// Mouse events
 		//
 		if (userInput.isMouseEvent) {
-			// move
-			if (button == 1) {
-				avatar.setDestination(userInput.mousePressedX, userInput.mousePressedY);
+			if (button == 1 && super.isBuilding) {
+				A_Square sqr = null;
+				int i;
+				int sizeOfSquares = squareObjects.size();
+				for(i = 0 ; i < sizeOfSquares && !squareObjects.get(i).isWithin(userInput.mousePressedX, userInput.mousePressedY); ++i);
+				if(i != sizeOfSquares) {
+					sqr = squareObjects.get(i);
+				};
+				if(sqr != null && !sqr.getTaken()) {
+					int[] middle = sqr.getMiddle();
+					gameObjects.add(new TD_Turret(middle[0],middle[1],20));
+				}
 			}
 		}
 
@@ -98,7 +98,7 @@ class TD_World extends A_World {
 	}
 	*/
 	protected void createNewObjects(double diffSeconds) {
-		createZombie(diffSeconds);
+		//createZombie(diffSeconds);
 
 		// delete HelpText after ... seconds
 		if (helpText != null) {
