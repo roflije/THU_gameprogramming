@@ -60,7 +60,7 @@ class TD_World extends A_World {
 				};
 				if(sqr != null && !sqr.getTaken()) {
 					sqr.take();
-					int[][] startend = {{0,0},{24,20}};
+					int[][] startend = {{0,10},{24,10}};
 					LinkedList<Cell> cells = BFS.shortestPath(compose2DMatrix(), startend[0],startend[1]);
 					if(cells == null) {
 						System.out.println("Cannot create path!");
