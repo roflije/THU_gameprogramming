@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.util.Queue;
 
 class TD_AlienAI extends A_GameObject {
 	private static final int HUNTING = 1;
@@ -8,31 +9,33 @@ class TD_AlienAI extends A_GameObject {
 	private int state;
 	private double alfaClear;
 	private double secondsClear;
+	private A_Square currentSquare;
+	private Queue<A_Square> route;
 
 	// life of a zombie
-	private double life = 1.0;
+	private int life;
 
 	private static final B_Shape SHAPE = new B_Shape(15, new Color(160, 80, 40));
 
-	public TD_AlienAI(double x, double y) {
+	public TD_AlienAI(A_Square spawn, double x, double y, int life) {
 		super(x, y, 0, 40, SHAPE);
 		this.isMoving = false;
-
 		state = HUNTING;
-
 		// turn left or right to clear
 		alfaClear = Math.PI;
 		if (Math.random() < 0.5)
 			alfaClear = -alfaClear;
-
 	}
 
+	public void updatePath() {
+		
+	}
 	public void move(double diffSeconds) {
 		// state HUNTING
 		//
+		this.setDestination(world.avatar);
 
 		if (state == HUNTING) {
-			this.setDestination(world.avatar);
 
 			super.move(diffSeconds);
 
@@ -106,7 +109,7 @@ class TD_AlienAI extends A_GameObject {
 	// inform zombie it is hit
 	public void hasBeenShot() {
 		// every shot decreases life
-		life -= 0.21;
+		life -= 1;
 
 		// if Zombie is dead (haha), delete it
 		if (life <= 0) {
@@ -118,4 +121,5 @@ class TD_AlienAI extends A_GameObject {
 	public A_Type type() {
 		return A_Type.ALIEN;
 	}
+	
 }

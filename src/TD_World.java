@@ -1,3 +1,5 @@
+import java.util.LinkedList;
+
 class TD_World extends A_World {
 	private double timePassed = 0;
 	private double timeSinceLastShot = 0;
@@ -10,17 +12,22 @@ class TD_World extends A_World {
 	private double lifeHelpText = 10.0;
 
 	protected void init() {
-		for(int x = 0 ; x <= A_Const.WIDTH ; x = x+40) {
-			for(int y = 0 ; y <= A_Const.HEIGHT ; y = y+40) {
-				squareObjects.add(new A_Square(x, y, x+40, y+40));
+		for(int x = 0, i = 0 ; x <= 960 ; x = x+40, ++i) {
+			for(int y = 0, j = 0 ; y <= 800 ; y = y+40, ++j) {
+				squareObjects[i][j] = new A_Square(x, y, x+40, y+40);
 			}
 		}
+		A_Square startSquare = squareObjects[0][10];
+		startSquare.setStart();
+		A_Square endSquare = squareObjects[24][10];
+		endSquare.setEnd();
 		// add the Avatar
 		avatar = new TD_Avatar(400, 500);
 		gameObjects.add(avatar);
 
 		// add one zombie
-		//gameObjects.add(new TD_AlienAI(100, 100));
+		double[] startPoint = startSquare.getMiddle();
+		gameObjects.add(new TD_AlienAI(startSquare, startPoint[0],startPoint[1], 10));
 
 		counterC = new TD_Counter(20, 80);
 		counterH = new TD_CounterHealth(20, 40);
@@ -36,20 +43,32 @@ class TD_World extends A_World {
 		int button = userInput.mouseButton;
 
 		//
-		// Mouse events
-		//
 		if (userInput.isMouseEvent) {
 			if (button == 1 && super.isBuilding) {
 				A_Square sqr = null;
-				int i;
-				int sizeOfSquares = squareObjects.size();
-				for(i = 0 ; i < sizeOfSquares && !squareObjects.get(i).isWithin(userInput.mousePressedX, userInput.mousePressedY); ++i);
-				if(i != sizeOfSquares) {
-					sqr = squareObjects.get(i);
+				int i = 0;
+				int j = 0;
+				boolean loop = true;
+				for(int ii = 0 ; ii < 25 && loop; ++ii)
+					for(int jj = 0 ; jj < 21 && loop ; ++jj)
+						if(squareObjects[ii][jj].isWithin((double)userInput.mousePressedX, (double)userInput.mousePressedY)) {
+							i = ii;
+							j = jj;
+						}
+				if(i != 25 && j != 21) {
+					sqr = squareObjects[i][j];
 				};
 				if(sqr != null && !sqr.getTaken()) {
-					int[] middle = sqr.getMiddle();
-					gameObjects.add(new TD_Turret(middle[0],middle[1],20));
+					sqr.take();
+					int[][] startend = {{0,0},{24,20}};
+					LinkedList<Cell> cells = BFS.shortestPath(compose2DMatrix(), startend[0],startend[1]);
+					if(cells == null) {
+						System.out.println("Cannot create path!");
+						sqr.notTake();
+					} else {
+						double[] middle = sqr.getMiddle();
+						gameObjects.add(new TD_Turret(middle[0],middle[1],20));	
+					}
 				}
 			}
 		}
@@ -74,29 +93,24 @@ class TD_World extends A_World {
 		if (userInput.isKeyEvent) {
 			if (userInput.keyPressed == '2') {
 				toggleBuilding();
+				compose2DMatrix();
 			}
 		}
 	}
 
-	/*
-	private void throwGrenade(double x, double y) {
-		if (grenades <= 0)
-			return;
-
-		// throw grenade
-		for (int i = 0; i < 2000; i++) {
-			double alfa = Math.random() * Math.PI * 2;
-			double speed = 50 + Math.random() * 200;
-			double time = 0.2 + Math.random() * 0.4;
-			TD_Shot shot = new TD_Shot(x, y, alfa, speed, time);
-			this.gameObjects.add(shot);
+	private int[][] compose2DMatrix(){
+		int[][] result = new int[25][21];
+		for(int i = 0 ; i < 25 ; ++i) {
+			for(int j = 0 ; j < 21 ; ++j) {
+				if(!squareObjects[i][j].getTaken()) {
+					result[i][j] = 1;
+				} else {
+					result[i][j] = 0;
+				}
+			}
 		}
-
-		// inform counter
-		grenades--;
-		counterG.setNumber(grenades);
+		return result;
 	}
-	*/
 	protected void createNewObjects(double diffSeconds) {
 		//createZombie(diffSeconds);
 
@@ -109,74 +123,6 @@ class TD_World extends A_World {
 			}
 		}
 	}
-
-	/*
-	 * private void createGrenade(double diffSeconds) { final double INTERVAL =
-	 * A_Const.SPAWN_GRENADE;
-	 * 
-	 * spawnGrenade += diffSeconds; if(spawnGrenade>INTERVAL) { spawnGrenade -=
-	 * INTERVAL;
-	 * 
-	 * // create new Grenade double x = 20+Math.random()*960; double y =
-	 * 20+Math.random()*760;
-	 * 
-	 * // if too close to Avatar, cancel double dx = x-avatar.x; double dy =
-	 * y-avatar.y; if(dx*dx+dy*dy < 200*200) { spawnGrenade = INTERVAL; return; }
-	 * 
-	 * 
-	 * // if collisions occur, cancel TD_Grenade grenade = new TD_Grenade(x,y);
-	 * A_GameObjectList list = A_GameObject.physicsSystem.getCollisions(grenade);
-	 * if(list.size()!=0) { spawnGrenade = INTERVAL; return; }
-	 * 
-	 * // else add zombie to world this.gameObjects.add(grenade);
-	 * counterG.setNumber(grenades); }
-	 * 
-	 * }
-	 */
-
-	private void createZombie(double diffSeconds) {
-		final double INTERVAL = A_Const.SPAWN_INTERVAL;
-
-		timePassed += diffSeconds;
-		if (timePassed > INTERVAL) {
-			timePassed -= INTERVAL;
-
-			// create new Zombie
-			double x = 20 + Math.random() * 960;
-			double y = 20 + Math.random() * 760;
-
-			// if too close to Avatar, cancel
-			double dx = x - avatar.x;
-			double dy = y - avatar.y;
-			if (dx * dx + dy * dy < 200 * 200) {
-				timePassed = INTERVAL;
-				return;
-			}
-
-			// if collisions occur, cancel
-			TD_AlienAI zombie = new TD_AlienAI(x, y);
-			A_GameObjectList list = A_GameObject.physicsSystem.getCollisions(zombie);
-			if (list.size() != 0) {
-				timePassed = INTERVAL;
-				return;
-			}
-
-			// else add zombie to world
-			this.gameObjects.add(zombie);
-			zombie.setDestination(avatar);
-			TD_Counter counter = (TD_Counter) textObjects.get(0);
-			counter.increment();
-		}
-
-	}
-	/*
-	public void addGrenade() {
-		if (grenades < 3) {
-			grenades++;
-		}
-		counterG.setNumber(grenades);
-	}
-	*/
 	public void gameOver() {
 		while (true)
 			;

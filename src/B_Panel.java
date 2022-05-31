@@ -57,11 +57,19 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 	}
 
 	public final void draw(A_Square sq) {
+		if(sq.isStart()) {
+			graphics.setColor(new Color(255,0,0));
+			graphics.fillRect((int)sq.getsX(), (int)sq.getsY(), 40, 40);
+		}
+		if(sq.isEnd()) {
+			graphics.setColor(new Color(0,0,255));
+			graphics.fillRect((int)sq.getsX(), (int)sq.getsY(), 40, 40);
+		}
 		graphics.setColor(Color.BLACK);
-		graphics.drawLine(sq.getsX(),sq.getsY(),sq.geteX(),sq.getsY());
-		graphics.drawLine(sq.getsX(),sq.geteY(),sq.geteX(),sq.geteY());
-		graphics.drawLine(sq.getsX(), sq.getsY(), sq.getsX(), sq.geteY());
-		graphics.drawLine(sq.geteX(), sq.getsY(), sq.geteX(), sq.geteY());
+		graphics.drawLine((int)sq.getsX(),(int)sq.getsY(),(int)sq.geteX(),(int)sq.getsY());
+		graphics.drawLine((int)sq.getsX(),(int)sq.geteY(),(int)sq.geteX(),(int)sq.geteY());
+		graphics.drawLine((int)sq.getsX(), (int)sq.getsY(), (int)sq.getsX(), (int)sq.geteY());
+		graphics.drawLine((int)sq.geteX(), (int)sq.getsY(), (int)sq.geteX(), (int)sq.geteY());
 	}
 	public void redraw() {
 		this.getGraphics().drawImage(imageBuffer, 0, 0, this);

@@ -12,7 +12,7 @@ abstract class A_World {
 	A_GameObjectList gameObjects = new A_GameObjectList();
 	A_GameObject avatar;
 	ArrayList<A_TextObject> textObjects = new ArrayList<A_TextObject>();
-	ArrayList<A_Square> squareObjects = new ArrayList<A_Square>();
+	A_Square[][] squareObjects = new A_Square[25][21];
 
 	A_World() {
 		physicsSystem = new TD_PhysicsSystem(this);
@@ -70,9 +70,10 @@ abstract class A_World {
 				graphicSystem.draw(gameObjects.get(i));
 			}
 			if (isBuilding) {
-				int howManySquares = squareObjects.size();
-				for (int i = 0; i < howManySquares; ++i) {
-					graphicSystem.draw(squareObjects.get(i));
+				for (int i = 0; i < 25; ++i) {
+					for(int j = 0 ; j < 21 ; ++j) {
+						graphicSystem.draw(squareObjects[i][j]);
+					}
 				}
 			}
 			// draw all TextObjects
