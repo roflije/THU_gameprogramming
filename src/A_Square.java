@@ -61,10 +61,14 @@ public class A_Square {
 	public boolean isEnd() {
 		return this.isEnd;
 	}
-	public static Queue<A_Square> getPathFromCellList(LinkedList<Cell> path){
-		Queue<A_Square> q = new LinkedList<A_Square>();
+	public static LinkedList<A_Square> getPathFromCellList(A_Square[][] squares, LinkedList<Cell> path){
+		LinkedList<A_Square> q = new LinkedList<A_Square>();
 		while(!path.isEmpty()) {
-			Cell c = path.getFirst();
+			Cell c = path.remove();
+			q.add(squares[c.x][c.y]);
+		}
+		if(q.isEmpty()) {
+			return null;
 		}
 		return q;
 	}
