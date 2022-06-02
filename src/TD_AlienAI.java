@@ -22,11 +22,15 @@ class TD_AlienAI extends A_GameObject {
 		// turn left or right to clear
 	}
 
-	public void updatePath(A_Square[][] squares, int[][] matrix) {
+	public boolean updatePath() {
 		int[] currentSqr = {current.getI(), current.getJ()};
-		this.route = A_Square.getPathFromCellList(squares, BFS.shortestPath(matrix, currentSqr, A_Const.END));
+		LinkedList<A_Square> newRoute = A_Square.getPathFromCellList(BFS.shortestPath(currentSqr, A_Const.END));
+		if(newRoute == null)
+			return false;
+		this.route = newRoute;
 		System.out.println("NEW MONSTER PATH: " + this.route);
 		this.routeChanged = true;
+		return true;
 	}
 
 	public void move(double diffSeconds) {

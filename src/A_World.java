@@ -1,7 +1,8 @@
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 abstract class A_World {
+	public static A_Square[][] squareObjects = new A_Square[25][21];
+
 	private A_GraphicSystem graphicSystem;
 	private A_PhysicsSystem physicsSystem;
 	private A_InputSystem inputSystem;
@@ -10,11 +11,10 @@ abstract class A_World {
 	private static final int FRAME_MINIMUM_MILLIS = 10;
 
 	// all objects in the game, including the Avatar
-	A_GameObjectList gameObjects = new A_GameObjectList();
-	A_GameObject avatar;
-	ArrayList<A_TextObject> textObjects = new ArrayList<A_TextObject>();
-	A_Square[][] squareObjects = new A_Square[25][21];
-	LinkedList<A_Square> init_route;
+	protected A_GameObjectList gameObjects = new A_GameObjectList();
+	protected A_GameObject avatar;
+	protected ArrayList<A_TextObject> textObjects = new ArrayList<A_TextObject>();
+
 	A_World() {
 		physicsSystem = new TD_PhysicsSystem(this);
 	}

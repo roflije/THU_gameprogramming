@@ -2,21 +2,24 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 class TD_World extends A_World {
+	public static int[][] matrix = new int[25][21];
+
 	private double timeSinceLastShot = 0;
 
 	private TD_CounterHealth counterH;
 	private TD_Counter counterC;
 	private TD_HelpText helpText;
 
-	ArrayList<TD_AlienAI> monsters = new ArrayList<TD_AlienAI>();
+	private ArrayList<TD_AlienAI> monsterObject = new ArrayList<TD_AlienAI>();
+	private LinkedList<A_Square> initRoute;
 
 	private double lifeHelpText = 10.0;
-	int[][] startend = {{0,10},{24,10}};
+	int[][] startend = { { 0, 10 }, { 24, 10 } };
 
 	protected void init() {
-		for(int x = 0, i = 0 ; x <= 960 ; x = x+40, ++i) {
-			for(int y = 0, j = 0 ; y <= 800 ; y = y+40, ++j) {
-				squareObjects[i][j] = new A_Square(x, y, x+40, y+40,i,j);
+		for (int x = 0, i = 0; x <= 960; x = x + 40, ++i) {
+			for (int y = 0, j = 0; y <= 800; y = y + 40, ++j) {
+				squareObjects[i][j] = new A_Square(x, y, x + 40, y + 40, i, j);
 			}
 		}
 		A_Square startSquare = squareObjects[0][10];
@@ -28,12 +31,13 @@ class TD_World extends A_World {
 		gameObjects.add(avatar);
 
 		// calculate initial route
-		LinkedList<A_Square> init_route = A_Square.getPathFromCellList(squareObjects, BFS.shortestPath(compose2DMatrix(), startend[0],startend[1]));
+		updateMatrix();
+		initRoute = A_Square.getPathFromCellList(BFS.shortestPath(startend[0], startend[1]));
 		// add one zombie
 		double[] startPoint = startSquare.getMiddle();
-		TD_AlienAI monster = new TD_AlienAI(startSquare, init_route, startPoint[0],startPoint[1], 10);
+		TD_AlienAI monster = new TD_AlienAI(startSquare, initRoute, startPoint[0], startPoint[1], 10);
 		gameObjects.add(monster);
-		monsters.add(monster);
+		monsterObject.add(monster);
 
 		counterC = new TD_Counter(20, 80);
 		counterH = new TD_CounterHealth(20, 40);
@@ -55,28 +59,38 @@ class TD_World extends A_World {
 				int i = 0;
 				int j = 0;
 				boolean loop = true;
-				for(int ii = 0 ; ii < 25 && loop; ++ii)
-					for(int jj = 0 ; jj < 21 && loop ; ++jj)
-						if(squareObjects[ii][jj].isWithin((double)userInput.mousePressedX, (double)userInput.mousePressedY)) {
+				for (int ii = 0; ii < 25 && loop; ++ii)
+					for (int jj = 0; jj < 21 && loop; ++jj)
+						if (squareObjects[ii][jj].isWithin((double) userInput.mousePressedX,
+								(double) userInput.mousePressedY)) {
 							i = ii;
 							j = jj;
 						}
-				if(i != 25 && j != 21) {
+				if (i != 25 && j != 21) {
 					sqr = squareObjects[i][j];
-				};
-				if(sqr != null && !sqr.getTaken()) {
+				}
+				;
+				if (sqr != null && !sqr.getTaken()) {
 					sqr.take();
-					int[][] matrix = compose2DMatrix();
-					LinkedList<Cell> cells = BFS.shortestPath(matrix, startend[0],startend[1]);
-					if(cells == null) {
-						System.out.println("Cannot create path!");
+					updateMatrix();
+					LinkedList<Cell> cells = BFS.shortestPath(startend[0], startend[1]);
+					if (cells == null) {
+						System.out.println("Cannot create path from start!");
 						sqr.notTake();
 					} else {
-						double[] middle = sqr.getMiddle();
-						for (TD_AlienAI a : monsters) {
-							a.updatePath(squareObjects, matrix);
+						boolean cannotCreate = false;
+						for (TD_AlienAI a : monsterObject) {
+							if (!a.updatePath())
+								cannotCreate = true;
 						}
-						gameObjects.add(new TD_Turret(middle[0],middle[1],20));	
+						if (cannotCreate) {
+							System.out.println("Cannot create path from start!");
+							sqr.notTake();
+						} else {
+							double[] middle = sqr.getMiddle();
+							gameObjects.add(new TD_Turret(middle[0], middle[1], 20));
+						}
+
 					}
 				}
 			}
@@ -102,26 +116,24 @@ class TD_World extends A_World {
 		if (userInput.isKeyEvent) {
 			if (userInput.keyPressed == '2') {
 				toggleBuilding();
-				compose2DMatrix();
 			}
 		}
 	}
 
-	private int[][] compose2DMatrix(){
-		int[][] result = new int[25][21];
-		for(int i = 0 ; i < 25 ; ++i) {
-			for(int j = 0 ; j < 21 ; ++j) {
-				if(!squareObjects[i][j].getTaken()) {
-					result[i][j] = 1;
+	private void updateMatrix() {
+		for (int i = 0; i < 25; ++i) {
+			for (int j = 0; j < 21; ++j) {
+				if (!squareObjects[i][j].getTaken()) {
+					matrix[i][j] = 1;
 				} else {
-					result[i][j] = 0;
+					matrix[i][j] = 0;
 				}
 			}
 		}
-		return result;
 	}
+
 	protected void createNewObjects(double diffSeconds) {
-		//createZombie(diffSeconds);
+		// createZombie(diffSeconds);
 
 		// delete HelpText after ... seconds
 		if (helpText != null) {
@@ -132,6 +144,7 @@ class TD_World extends A_World {
 			}
 		}
 	}
+
 	public void gameOver() {
 		while (true)
 			;
