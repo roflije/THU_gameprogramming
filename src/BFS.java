@@ -55,7 +55,6 @@ public class BFS {
 	        do {
 	            path.addFirst(p);
 	        } while ((p = p.prev) != null);
-	        System.out.println(path);
 	        return path;
 	    }
 	}

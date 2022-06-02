@@ -1,19 +1,22 @@
 import java.util.LinkedList;
-import java.util.Queue;
 
 public class A_Square {
 	private double sX;
 	private double sY;
 	private double eX;
 	private double eY;
+	private int i;
+	private int j;
 	private boolean taken;
 	private boolean isStart = false;
 	private boolean isEnd = false;
-	public A_Square(int sx, int sy, int ex, int ey) {
+	public A_Square(int sx, int sy, int ex, int ey, int i, int j) {
 		this.sX = sx;
 		this.sY = sy;
 		this.eX = ex;
 		this.eY = ey;
+		this.i = i;
+		this.j = j;
 		this.taken = false;
 	}
 	public double getsX() {
@@ -60,6 +63,12 @@ public class A_Square {
 	}
 	public boolean isEnd() {
 		return this.isEnd;
+	}
+	public int getI(){
+		return this.i;
+	}
+	public int getJ(){
+		return this.j;
 	}
 	public static LinkedList<A_Square> getPathFromCellList(A_Square[][] squares, LinkedList<Cell> path){
 		LinkedList<A_Square> q = new LinkedList<A_Square>();

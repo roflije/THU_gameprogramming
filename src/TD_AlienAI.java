@@ -1,109 +1,48 @@
 import java.awt.Color;
-import java.util.Queue;
+import java.util.LinkedList;
 
 class TD_AlienAI extends A_GameObject {
-	private static final int HUNTING = 1;
-	private static final int STUCK = 2;
-	private static final int CLEARING = 3;
 
-	private int state;
-	private double alfaClear;
-	private double secondsClear;
-	private A_Square currentSquare;
-	private Queue<A_Square> route;
-
+	private A_Square dest;
+	double[] destCoords = {0,0};
+	private LinkedList<A_Square> route;
+	private A_Square current;
+	private boolean routeChanged = false;
 	// life of a zombie
 	private int life;
 
 	private static final B_Shape SHAPE = new B_Shape(15, new Color(160, 80, 40));
 
-	public TD_AlienAI(A_Square spawn, double x, double y, int life) {
+	public TD_AlienAI(A_Square spawn, LinkedList<A_Square> route, double x, double y, int life) {
 		super(x, y, 0, 40, SHAPE);
-		this.isMoving = false;
-		state = HUNTING;
+		this.current = spawn;
+		this.isMoving = true;
+		this.route = route;
+		this.dest = route.pollFirst();
 		// turn left or right to clear
-		alfaClear = Math.PI;
-		if (Math.random() < 0.5)
-			alfaClear = -alfaClear;
 	}
 
-	public void updatePath() {
-		
+	public void updatePath(A_Square[][] squares, int[][] matrix) {
+		int[] currentSqr = {current.getI(), current.getJ()};
+		this.route = A_Square.getPathFromCellList(squares, BFS.shortestPath(matrix, currentSqr, A_Const.END));
+		System.out.println("NEW MONSTER PATH: " + this.route);
+		this.routeChanged = true;
 	}
+
 	public void move(double diffSeconds) {
-		// state HUNTING
-		//
-		this.setDestination(world.avatar);
-
-		if (state == HUNTING) {
-
+		if(!routeChanged && !dest.isWithin(this.x, this.y)){
 			super.move(diffSeconds);
-
-			// handle collisions of the zombie
-			A_GameObjectList collisions = physicsSystem.getCollisions(this);
-			for (int i = 0; i < collisions.size(); i++) {
-				A_GameObject obj = collisions.get(i);
-
-				A_Type type = obj.type();
-
-				// if object is avatar, game over
-				if (type == A_Type.PLAYER) {
-					world.gameOver();
-				}
-
-				// if object is zombie, step back
-				if (type == A_Type.ALIEN) {
-					moveBack();
-					state = STUCK;
-					return;
-				}
-
-				// if Object is a tree, move back one step
-				if (obj.type() == A_Type.TURRET) {
-					moveBack();
-					state = STUCK;
-					return;
-				}
-			}
-		}
-
-		// state STUCK
-		//
-
-		else if (state == STUCK) {
-			// seconds left for clearing
-			secondsClear = 1.0 + Math.random() * 0.5;
-			// turn and hope to get clear
-			alfa += alfaClear * diffSeconds;
-
-			// try to clear
-			state = CLEARING;
-		}
-
-		// state CLEARING
-		//
-		else if (state == CLEARING) {
-			// check, if the clearing time has ended
-			secondsClear -= diffSeconds;
-			if (secondsClear < 0) {
-				state = HUNTING;
-				return;
-			}
-
-			// try step in this direction
+			return;
+		} else if (!route.isEmpty()) {
+			this.routeChanged = false;
+			current = dest;
+			dest = route.pollFirst();
+			destCoords = dest.getMiddle();
+			this.setDestination(destCoords[0], destCoords[1]);
+			System.out.println("NEW TARGET: ["+destCoords[0]+","+destCoords[1]+"]");
 			super.move(diffSeconds);
-
-			// check if path was unblocked
-			A_GameObjectList collisions = physicsSystem.getCollisions(this);
-			if (collisions.size() > 0) {
-				moveBack();
-
-				// stuck again
-				this.state = STUCK;
-				return;
-			}
-
 		}
+
 	}
 
 	// inform zombie it is hit
@@ -121,5 +60,5 @@ class TD_AlienAI extends A_GameObject {
 	public A_Type type() {
 		return A_Type.ALIEN;
 	}
-	
+
 }

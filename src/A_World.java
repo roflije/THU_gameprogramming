@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 abstract class A_World {
 	private A_GraphicSystem graphicSystem;
@@ -13,7 +14,7 @@ abstract class A_World {
 	A_GameObject avatar;
 	ArrayList<A_TextObject> textObjects = new ArrayList<A_TextObject>();
 	A_Square[][] squareObjects = new A_Square[25][21];
-
+	LinkedList<A_Square> init_route;
 	A_World() {
 		physicsSystem = new TD_PhysicsSystem(this);
 	}
@@ -27,7 +28,7 @@ abstract class A_World {
 			long currentTick = System.currentTimeMillis();
 			long millisDiff = currentTick - lastTick;
 
-			// don´t run faster then MINIMUM_DIFF_SECONDS per frame
+			// donï¿½t run faster then MINIMUM_DIFF_SECONDS per frame
 			if (millisDiff < FRAME_MINIMUM_MILLIS) {
 				try {
 					Thread.sleep(FRAME_MINIMUM_MILLIS - millisDiff);
