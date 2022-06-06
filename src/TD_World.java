@@ -80,7 +80,7 @@ class TD_World extends A_World {
 					} else {
 						boolean cannotCreate = false;
 						for (TD_AlienAI a : monsterObject) {
-							if (!a.updatePath())
+							if (!a.updatePath()) // sqr.isWithin(a.x, a.y)
 								cannotCreate = true;
 						}
 						if (cannotCreate) {

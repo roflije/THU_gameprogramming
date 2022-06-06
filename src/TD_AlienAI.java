@@ -23,7 +23,14 @@ class TD_AlienAI extends A_GameObject {
 	}
 
 	public boolean updatePath() {
-		int[] currentSqr = {current.getI(), current.getJ()};
+		int[] currentSqr = new int[2];
+		if(dest.isWithin(x, y)){
+			currentSqr[0] = dest.getI();
+			currentSqr[1] = dest.getJ();
+		} else {
+			currentSqr[0] = current.getI();
+			currentSqr[1] = current.getJ();		
+		}
 		LinkedList<A_Square> newRoute = A_Square.getPathFromCellList(BFS.shortestPath(currentSqr, A_Const.END));
 		if(newRoute == null)
 			return false;
@@ -34,7 +41,7 @@ class TD_AlienAI extends A_GameObject {
 	}
 
 	public void move(double diffSeconds) {
-		if(!routeChanged && !dest.isWithin(this.x, this.y)){
+		if(!routeChanged && !dest.isCloseCenter(this.x, this.y)){
 			super.move(diffSeconds);
 			return;
 		} else if (!route.isEmpty()) {

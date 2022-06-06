@@ -51,6 +51,15 @@ public class A_Square {
 	public boolean isWithin(double x, double y) {
 		return (x >= sX && x <= eX) && (y >= sY && y <= eY);
 	}
+	public boolean isCloseCenter(double x, double y){
+		double[] arr = getMiddle();
+		return (
+			x < arr[0] + A_Const.CLOSE_DISTANCE &&
+			x > arr[0] - A_Const.CLOSE_DISTANCE &&
+			y < arr[1] + A_Const.CLOSE_DISTANCE &&
+			y > arr[1] - A_Const.CLOSE_DISTANCE
+		);
+	}
 
 	public boolean getTaken() {
 		return taken;
