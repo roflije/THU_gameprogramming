@@ -43,6 +43,7 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 		graphics.setColor(shape.color);
 		graphics.fillOval(x, y, d, d);
 		graphics.setColor(Color.DARK_GRAY);
+
 		graphics.drawOval(x, y, d, d);
 	}
 

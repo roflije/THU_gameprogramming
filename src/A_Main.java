@@ -5,7 +5,7 @@ class A_Main {
 		A_Frame frame = new B_Frame();
 		frame.displayOnScreen();
 
-		world = new TD_World();
+		world = new TD_WorldPrototype();
 
 		world.setGraphicSystem(frame.getGraphicSystem());
 		world.setInputSystem(frame.getInputSystem());
@@ -21,4 +21,5 @@ class A_Main {
 	public static void main(String[] args) {
 		new A_Main();
 	}
+
 }
