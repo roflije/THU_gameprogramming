@@ -11,7 +11,7 @@ class TD_AlienAI extends A_GameObject {
 	// life of a zombie
 	private int life;
 
-	private static final B_Shape SHAPE = new B_Shape(15, new Color(160, 80, 40),A_Type.ALIEN);
+	private static final B_Shape SHAPE = new B_Shape(15, new Color(160, 80, 40));
 
 	public TD_AlienAI(A_Square spawn, LinkedList<A_Square> route, double x, double y, int life) {
 		super(x, y, 0, 40, SHAPE);

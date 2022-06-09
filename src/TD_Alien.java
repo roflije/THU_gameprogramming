@@ -7,7 +7,7 @@ class TD_Alien extends A_GameObject {
 	
 	
 	
-	public TD_Alien(double x, double y, TD_CounterMonsterHealth c) {
+	public TD_Alien(double x, double y) {
 		super(x, y, 0, 70, new B_Shape(15, COLOR));
 		this.isMoving = false;
 	

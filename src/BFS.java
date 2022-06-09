@@ -4,7 +4,7 @@ public class BFS {
  
 	//BFS, Time O(n^2), Space O(n^2)
 	public static LinkedList<Cell> shortestPath(int[] start, int[] end) {
-		int[][] matrix = TD_WorldPrototypeV2.matrix;
+		int[][] matrix = TD_World.matrix;
 		int sx = start[0], sy = start[1];
 		int dx = end[0], dy = end[1];	
 		//if start or end value is 0, return

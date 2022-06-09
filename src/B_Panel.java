@@ -184,6 +184,9 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 
 
 	}
+	
+	
+	
 
 	public final void draw(A_TextObject text) {
 		B_Shape shape = (B_Shape) text.shape;
