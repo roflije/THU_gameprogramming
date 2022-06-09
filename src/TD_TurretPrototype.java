@@ -1,10 +1,10 @@
 import java.awt.Color;
 
-class TD_Turret extends A_GameObject {
+class TD_TurretPrototype extends A_GameObject {
 	protected static final Color COLOR = new Color(100, 100, 100);
 
-	public TD_Turret(double x, double y, int r) {
-		super(x, y, 0, 0, new B_Shape(r, COLOR,A_Type.TURRET));
+	public TD_TurretPrototype(int x, int y, int m) {
+		super(x, y, 0, 0, new B_Shape(m, COLOR));
 		this.isMoving = false;
 	}
 

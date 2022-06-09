@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 
 abstract class A_World {
+	public static A_Square[][] squareObjects = new A_Square[25][21];
+
 	private A_GraphicSystem graphicSystem;
 	private A_PhysicsSystem physicsSystem;
 	private A_InputSystem inputSystem;
@@ -9,10 +11,9 @@ abstract class A_World {
 	private static final int FRAME_MINIMUM_MILLIS = 10;
 
 	// all objects in the game, including the Avatar
-	A_GameObjectList gameObjects = new A_GameObjectList();
-	A_GameObject avatar;
-	ArrayList<A_TextObject> textObjects = new ArrayList<A_TextObject>();
-	ArrayList<A_Square> squareObjects = new ArrayList<A_Square>();
+	protected A_GameObjectList gameObjects = new A_GameObjectList();
+	protected A_GameObject avatar;
+	protected ArrayList<A_TextObject> textObjects = new ArrayList<A_TextObject>();
 
 	A_World() {
 		physicsSystem = new TD_PhysicsSystem(this);
@@ -27,7 +28,7 @@ abstract class A_World {
 			long currentTick = System.currentTimeMillis();
 			long millisDiff = currentTick - lastTick;
 
-			// don´t run faster then MINIMUM_DIFF_SECONDS per frame
+			// donï¿½t run faster then MINIMUM_DIFF_SECONDS per frame
 			if (millisDiff < FRAME_MINIMUM_MILLIS) {
 				try {
 					Thread.sleep(FRAME_MINIMUM_MILLIS - millisDiff);
@@ -70,9 +71,10 @@ abstract class A_World {
 				graphicSystem.draw(gameObjects.get(i));
 			}
 			if (isBuilding) {
-				int howManySquares = squareObjects.size();
-				for (int i = 0; i < howManySquares; ++i) {
-					graphicSystem.draw(squareObjects.get(i));
+				for (int i = 0; i < 25; ++i) {
+					for(int j = 0 ; j < 21 ; ++j) {
+						graphicSystem.draw(squareObjects[i][j]);
+					}
 				}
 			}
 			// draw all TextObjects

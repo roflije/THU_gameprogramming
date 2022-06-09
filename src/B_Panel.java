@@ -33,18 +33,156 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 		graphics.fillRect(0, 0, A_Const.WIDTH, A_Const.HEIGHT);
 	}
 
-	public final void draw(A_GameObject dot) {
-		B_Shape shape = (B_Shape) dot.shape;
+	//	public final void draw(A_GameObject dot) {
+	//    
+	//		
+	//		B_Shape shape = (B_Shape) dot.shape;
+	//
+	//		int x = (int) (dot.x - shape.radius());
+	//		int y = (int) (dot.y - shape.radius());
+	//		int d = (int) (shape.radius() * 2);
+	//
+	//		graphics.setColor(shape.color);
+	//		graphics.fillOval(x, y, d, d);
+	//		graphics.setColor(Color.DARK_GRAY);
+	//
+	//		graphics.drawOval(x, y, d, d);
+	//	}
 
-		int x = (int) (dot.x - shape.radius());
-		int y = (int) (dot.y - shape.radius());
-		int d = (int) (shape.radius() * 2);
 
-		graphics.setColor(shape.color);
-		graphics.fillOval(x, y, d, d);
-		graphics.setColor(Color.DARK_GRAY);
+	public final void draw(A_GameObject obj) {
+		B_Shape shape = (B_Shape) obj.shape;
 
-		graphics.drawOval(x, y, d, d);
+
+
+		A_Type type =  obj.type();
+		switch(type) {
+
+		case PLAYER :
+
+		{
+			
+
+			int x = (int) (obj.x - shape.radius());
+			int y = (int) (obj.y - shape.radius());
+			int d = (int) (shape.radius() * 2);
+
+			graphics.setColor(shape.color);
+			graphics.fillOval(x, y, d, d);
+			graphics.setColor(Color.DARK_GRAY);
+
+			graphics.drawOval(x, y, d, d);
+
+			break;
+		}
+		
+		
+		case ALIEN :
+
+		{
+			
+
+			int x = (int) (obj.x - shape.radius());
+			int y = (int) (obj.y - shape.radius());
+			int d = (int) (shape.radius() * 2);
+
+			graphics.setColor(shape.color);
+			graphics.fillOval(x, y, d, d);
+			graphics.setColor(Color.DARK_GRAY);
+
+			graphics.drawOval(x, y, d, d);
+
+			break;
+		}
+		
+		
+		
+//		case A_Const.SMALL_MONSTER:
+//		{
+//		 
+//
+//			int x = (int) (obj.x - shape.radius());
+//			int y = (int) (obj.y - shape.radius())+10;
+//			int d = (int) (shape.radius());
+//
+//			graphics.setColor(shape.color);
+//			graphics.fillOval(x, y, d, d);
+//			graphics.setColor(Color.DARK_GRAY);
+//
+//			graphics.drawOval(x, y, d, d);
+//
+//			break;
+//
+//		}
+//		
+//
+//		case A_Const.MEDIUM_MONSTER:
+//		{
+// 
+//
+//			int x = (int) (obj.x - shape.radius());
+//			int y = (int) (obj.y - shape.radius());
+//			int d = (int) (shape.radius() * 1.8);
+//
+//			graphics.setColor(shape.color);
+//			graphics.fillOval(x, y, d, d);
+//			graphics.setColor(Color.DARK_GRAY);
+//
+//			graphics.drawOval(x, y, d, d);
+//
+//			break;
+//
+//		}
+//		
+//		
+//		case A_Const.LARGE_MONSTER:
+//		{
+// 
+//
+//			int x = (int) (obj.x - shape.radius());
+//			int y = (int) (obj.y - shape.radius()) - 2;
+//			int d = (int) (shape.radius() * 2.4);
+//
+//			graphics.setColor(shape.color);
+//			graphics.fillOval(x, y, d, d);
+//			graphics.setColor(Color.DARK_GRAY);
+//
+//			graphics.drawOval(x, y, d, d);
+//
+//			break;
+//
+//		}
+		
+
+		case TURRET:
+		{
+			 
+
+			int x1 =  (int) (obj.x - shape.radius());
+			int y1 = (int) (obj.y + shape.radius());
+			int x2 =  (int) obj.x;
+			int y2 = (int) (obj.y - shape.radius());
+			int x3 =  (int) (obj.x + shape.radius());
+			int y3 = (int) (obj.y + shape.radius());
+
+			Polygon p = new Polygon(new int[] {x1,x2,x3}, new int[]{y1,y2,y3}, 3);
+
+			graphics.setColor(shape.color);
+			graphics.drawPolygon(p);
+			graphics.fillPolygon(p);
+
+			break;
+
+		}
+	 
+		case BULLET:
+			break;
+		default:
+			break;
+
+		}
+
+
 	}
 
 	public final void draw(A_TextObject text) {
@@ -58,11 +196,19 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 	}
 
 	public final void draw(A_Square sq) {
+		if(sq.isStart()) {
+			graphics.setColor(new Color(255,0,0));
+			graphics.fillRect((int)sq.getsX(), (int)sq.getsY(), 40, 40);
+		}
+		if(sq.isEnd()) {
+			graphics.setColor(new Color(0,0,255));
+			graphics.fillRect((int)sq.getsX(), (int)sq.getsY(), 40, 40);
+		}
 		graphics.setColor(Color.BLACK);
-		graphics.drawLine(sq.getsX(),sq.getsY(),sq.geteX(),sq.getsY());
-		graphics.drawLine(sq.getsX(),sq.geteY(),sq.geteX(),sq.geteY());
-		graphics.drawLine(sq.getsX(), sq.getsY(), sq.getsX(), sq.geteY());
-		graphics.drawLine(sq.geteX(), sq.getsY(), sq.geteX(), sq.geteY());
+		graphics.drawLine((int)sq.getsX(),(int)sq.getsY(),(int)sq.geteX(),(int)sq.getsY());
+		graphics.drawLine((int)sq.getsX(),(int)sq.geteY(),(int)sq.geteX(),(int)sq.geteY());
+		graphics.drawLine((int)sq.getsX(), (int)sq.getsY(), (int)sq.getsX(), (int)sq.geteY());
+		graphics.drawLine((int)sq.geteX(), (int)sq.getsY(), (int)sq.geteX(), (int)sq.geteY());
 	}
 	public void redraw() {
 		this.getGraphics().drawImage(imageBuffer, 0, 0, this);

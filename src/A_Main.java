@@ -5,7 +5,7 @@ class A_Main {
 		A_Frame frame = new B_Frame();
 		frame.displayOnScreen();
 
-		world = new TD_WorldPrototype();
+		world = new TD_WorldPrototypeV2();
 
 		world.setGraphicSystem(frame.getGraphicSystem());
 		world.setInputSystem(frame.getInputSystem());
