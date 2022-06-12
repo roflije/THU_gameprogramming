@@ -33,18 +33,160 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 		graphics.fillRect(0, 0, A_Const.WIDTH, A_Const.HEIGHT);
 	}
 
-	public final void draw(A_GameObject dot) {
-		B_Shape shape = (B_Shape) dot.shape;
+	//	public final void draw(A_GameObject dot) {
+	//    
+	//		
+	//		B_Shape shape = (B_Shape) dot.shape;
+	//
+	//		int x = (int) (dot.x - shape.radius());
+	//		int y = (int) (dot.y - shape.radius());
+	//		int d = (int) (shape.radius() * 2);
+	//
+	//		graphics.setColor(shape.color);
+	//		graphics.fillOval(x, y, d, d);
+	//		graphics.setColor(Color.DARK_GRAY);
+	//
+	//		graphics.drawOval(x, y, d, d);
+	//	}
 
-		int x = (int) (dot.x - shape.radius());
-		int y = (int) (dot.y - shape.radius());
-		int d = (int) (shape.radius() * 2);
 
-		graphics.setColor(shape.color);
-		graphics.fillOval(x, y, d, d);
-		graphics.setColor(Color.DARK_GRAY);
-		graphics.drawOval(x, y, d, d);
+	public final void draw(A_GameObject obj) {
+		B_Shape shape = (B_Shape) obj.shape;
+
+
+
+		A_Type type =  obj.type();
+		switch(type) {
+
+		case PLAYER :
+
+		{
+			
+
+			int x = (int) (obj.x - shape.radius());
+			int y = (int) (obj.y - shape.radius());
+			int d = (int) (shape.radius() * 2);
+
+			graphics.setColor(shape.color);
+			graphics.fillOval(x, y, d, d);
+			graphics.setColor(Color.DARK_GRAY);
+
+			graphics.drawOval(x, y, d, d);
+
+			break;
+		}
+		
+		
+		case ALIEN :
+
+		{
+			
+
+			int x = (int) (obj.x - shape.radius());
+			int y = (int) (obj.y - shape.radius());
+			int d = (int) (shape.radius() * 2);
+
+			graphics.setColor(shape.color);
+			graphics.fillOval(x, y, d, d);
+			graphics.setColor(Color.DARK_GRAY);
+
+			graphics.drawOval(x, y, d, d);
+
+			break;
+		}
+		
+		
+		
+//		case A_Const.SMALL_MONSTER:
+//		{
+//		 
+//
+//			int x = (int) (obj.x - shape.radius());
+//			int y = (int) (obj.y - shape.radius())+10;
+//			int d = (int) (shape.radius());
+//
+//			graphics.setColor(shape.color);
+//			graphics.fillOval(x, y, d, d);
+//			graphics.setColor(Color.DARK_GRAY);
+//
+//			graphics.drawOval(x, y, d, d);
+//
+//			break;
+//
+//		}
+//		
+//
+//		case A_Const.MEDIUM_MONSTER:
+//		{
+// 
+//
+//			int x = (int) (obj.x - shape.radius());
+//			int y = (int) (obj.y - shape.radius());
+//			int d = (int) (shape.radius() * 1.8);
+//
+//			graphics.setColor(shape.color);
+//			graphics.fillOval(x, y, d, d);
+//			graphics.setColor(Color.DARK_GRAY);
+//
+//			graphics.drawOval(x, y, d, d);
+//
+//			break;
+//
+//		}
+//		
+//		
+//		case A_Const.LARGE_MONSTER:
+//		{
+// 
+//
+//			int x = (int) (obj.x - shape.radius());
+//			int y = (int) (obj.y - shape.radius()) - 2;
+//			int d = (int) (shape.radius() * 2.4);
+//
+//			graphics.setColor(shape.color);
+//			graphics.fillOval(x, y, d, d);
+//			graphics.setColor(Color.DARK_GRAY);
+//
+//			graphics.drawOval(x, y, d, d);
+//
+//			break;
+//
+//		}
+		
+
+		case TURRET:
+		{
+			 
+
+			int x1 =  (int) (obj.x - shape.radius());
+			int y1 = (int) (obj.y + shape.radius());
+			int x2 =  (int) obj.x;
+			int y2 = (int) (obj.y - shape.radius());
+			int x3 =  (int) (obj.x + shape.radius());
+			int y3 = (int) (obj.y + shape.radius());
+
+			Polygon p = new Polygon(new int[] {x1,x2,x3}, new int[]{y1,y2,y3}, 3);
+
+			graphics.setColor(shape.color);
+			graphics.drawPolygon(p);
+			graphics.fillPolygon(p);
+
+			break;
+
+		}
+	 
+		case BULLET:
+			break;
+		default:
+			break;
+
+		}
+
+
 	}
+	
+	
+	
 
 	public final void draw(A_TextObject text) {
 		B_Shape shape = (B_Shape) text.shape;

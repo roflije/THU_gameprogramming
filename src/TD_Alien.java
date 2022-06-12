@@ -4,9 +4,13 @@ import java.util.ArrayList;
 class TD_Alien extends A_GameObject {
 	private static final Color COLOR = new Color(160, 80, 40);
 
+	
+	
+	
 	public TD_Alien(double x, double y) {
 		super(x, y, 0, 70, new B_Shape(15, COLOR));
 		this.isMoving = false;
+	
 	}
 
 	public void move(double diffSeconds) {

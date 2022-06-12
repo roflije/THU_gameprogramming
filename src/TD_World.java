@@ -5,7 +5,7 @@ class TD_World extends A_World {
 	public static int[][] matrix = new int[25][21];
 
 	private double timeSinceLastShot = 0;
-
+	
 	private TD_CounterHealth counterH;
 	private TD_Counter counterC;
 	private TD_HelpText helpText;
@@ -24,10 +24,11 @@ class TD_World extends A_World {
 		}
 		A_Square startSquare = squareObjects[0][10];
 		startSquare.setStart();
-		A_Square endSquare = squareObjects[24][10];
+	    A_Square   endSquare = squareObjects[24][10];
 		endSquare.setEnd();
 		// add the Avatar
-		avatar = new TD_Avatar(400, 500);
+	 TD_Avatar	avatar = new TD_Avatar(400, 500);
+		 
 		gameObjects.add(avatar);
 
 		// calculate initial route
@@ -38,14 +39,20 @@ class TD_World extends A_World {
 		TD_AlienAI monster = new TD_AlienAI(startSquare, initRoute, startPoint[0], startPoint[1], 10);
 		gameObjects.add(monster);
 		monsterObject.add(monster);
-
+ 
+		
+		
 		counterC = new TD_Counter(20, 80);
 		counterH = new TD_CounterHealth(20, 40);
 		helpText = new TD_HelpText(100, 400);
-
+		
+	//	c = new TD_CounterMonsterHealth(390,480);
 		textObjects.add(counterC);
 		textObjects.add(counterH);
 		textObjects.add(helpText);
+		textObjects.add(avatar.counter());
+	//	textObjects.add(c);
+		 
 	}
 
 	protected void processUserInput(A_UserInput userInput, double diffSeconds) {
@@ -144,7 +151,7 @@ class TD_World extends A_World {
 			}
 		}
 	}
-
+	
 	public void gameOver() {
 		while (true)
 			;
