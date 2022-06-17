@@ -26,6 +26,11 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 		this.addMouseListener(inputSystem);
 		this.addMouseMotionListener(inputSystem);
 		this.addKeyListener(inputSystem);
+	
+	
+	
+	
+	
 	}
 
 	public void clear() {

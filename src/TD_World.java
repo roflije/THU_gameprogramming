@@ -1,3 +1,4 @@
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -5,13 +6,15 @@ class TD_World extends A_World {
 	public static int[][] matrix = new int[25][21];
 
 	private double timeSinceLastShot = 0;
-	
+
 	private TD_CounterHealth counterH;
 	private TD_Counter counterC;
 	private TD_HelpText helpText;
 
 	private ArrayList<TD_AlienAI> monsterObject = new ArrayList<TD_AlienAI>();
 	private LinkedList<A_Square> initRoute;
+	private  double[] startPoint;
+	private  A_Square startSquare;
 
 	private double lifeHelpText = 10.0;
 	int[][] startend = { { 0, 10 }, { 24, 10 } };
@@ -22,37 +25,32 @@ class TD_World extends A_World {
 				squareObjects[i][j] = new A_Square(x, y, x + 40, y + 40, i, j);
 			}
 		}
-		A_Square startSquare = squareObjects[0][10];
+		startSquare = squareObjects[0][10];
 		startSquare.setStart();
-	    A_Square   endSquare = squareObjects[24][10];
+		A_Square endSquare = squareObjects[24][10];
 		endSquare.setEnd();
 		// add the Avatar
-	 TD_Avatar	avatar = new TD_Avatar(400, 500);
-		 
+		avatar = new TD_Avatar(400, 500);
 		gameObjects.add(avatar);
 
 		// calculate initial route
 		updateMatrix();
 		initRoute = A_Square.getPathFromCellList(BFS.shortestPath(startend[0], startend[1]));
 		// add one zombie
-		double[] startPoint = startSquare.getMiddle();
-		TD_AlienAI monster = new TD_AlienAI(startSquare, initRoute, startPoint[0], startPoint[1], 10);
-		gameObjects.add(monster);
-		monsterObject.add(monster);
- 
-		
-		
+		startPoint = startSquare.getMiddle();
+		//TD_AlienAI monster = new TD_AlienAI(startSquare, initRoute, startPoint[0], startPoint[1], 10);
+		//gameObjects.add(monster);
+		//monsterObject.add(monster);
+
 		counterC = new TD_Counter(20, 80);
 		counterH = new TD_CounterHealth(20, 40);
 		helpText = new TD_HelpText(100, 400);
-		
-	//	c = new TD_CounterMonsterHealth(390,480);
+
 		textObjects.add(counterC);
 		textObjects.add(counterH);
 		textObjects.add(helpText);
-		textObjects.add(avatar.counter());
-	//	textObjects.add(c);
-		 
+
+
 	}
 
 	protected void processUserInput(A_UserInput userInput, double diffSeconds) {
@@ -125,7 +123,86 @@ class TD_World extends A_World {
 				toggleBuilding();
 			}
 		}
+
+
+		if (userInput.isKeyEvent)  {
+			if (userInput.keyPressed == KeyEvent.VK_W) {
+				avatar.speed = 50;
+				avatar.alfa = Math.PI * -0.5;
+				System.out.println(avatar.speed);
+			}
+
+
+
+		}
+
+		if (userInput.isKeyEvent)  {
+			if (userInput.keyPressed == KeyEvent.VK_W) {
+				avatar.speed = 50;
+				avatar.alfa = Math.PI * -0.5;
+				System.out.println(avatar.speed);
+			}
+
+
+
+		}
+
+
+		if (userInput.isKeyEvent)  {
+			if (userInput.keyReleased == KeyEvent.VK_W) {
+				avatar.speed = 0;
+			}
+
+
+
+		}
+		if (userInput.isKeyEvent) {
+			if (userInput.keyPressed == KeyEvent.VK_A) {
+
+
+				if(avatar.alfa == Math.PI * 2)
+
+
+					avatar.speed = 50;
+				avatar.alfa = -Math.PI;
+				System.out.println(avatar.speed);
+			}
+		}
+
+		if (userInput.isKeyEvent) {
+			if (userInput.keyPressed == KeyEvent.VK_S) {
+
+				avatar.speed = 50;
+				avatar.alfa = -Math.PI * 1.5;
+				System.out.println(avatar.speed);
+			}
+		}
+
+
+		if (userInput.isKeyEvent) {
+			if (userInput.keyPressed == KeyEvent.VK_D) {
+				avatar.speed = 50;
+				avatar.alfa = Math.PI * 2;
+				System.out.println(avatar.speed);
+			}
+
+		}
+
+		if (userInput.isKeyEvent) {
+			if (userInput.keyPressed == KeyEvent.VK_SPACE) {
+				avatar.speed = 0;
+			}
+		}
+
+
+
 	}
+
+
+
+
+
+
 
 	private void updateMatrix() {
 		for (int i = 0; i < 25; ++i) {
@@ -139,7 +216,63 @@ class TD_World extends A_World {
 		}
 	}
 
+	/* This functions works randomly 
+	 * After a fixed time it results to null pointer for bigger intervals.
+	 * For shorter intervals it crashes after certain amount of aliens/zombies
+	 * Collusion detection and BFS works at random. Sometimes monster change they course
+	 * sometimes not.
+	 */
+
+	protected void spawn(double diffSeconds)
+	{
+
+		final double INTERVAL = A_Const.SPAWN_INTERVAL;
+
+		timeSinceLastShot += diffSeconds;
+		if(timeSinceLastShot>INTERVAL)
+		{
+			timeSinceLastShot -= INTERVAL;
+
+			// create new Zombie
+			//				double x = 20+Math.random()*960;
+			//				double y = 20+Math.random()*760;
+
+			// if too close to Avatar, cancel
+			//				double dx = x-avatar.x;
+			//				double dy = y-avatar.y;
+			//				if(dx*dx+dy*dy < 200*200) 
+			//				{ timeSinceLastShot = INTERVAL;
+			//				return;
+			//				}
+
+
+			// if collisions occur, cancel
+			TD_AlienAI monster = new TD_AlienAI(startSquare , initRoute, startPoint[0], startPoint[1], 10);
+			//				A_GameObjectList list = A_GameObject.physicsSystem.getCollisions(monster);
+			//				if(list.size()!=0)
+			//				{ timeSinceLastShot = INTERVAL;
+			//				return;
+			//				}
+
+			// else add monster to world
+			this.gameObjects.add(monster);
+			this.monsterObject.add(monster);
+
+
+		}
+
+
+
+
+
+	}
+
 	protected void createNewObjects(double diffSeconds) {
+
+
+		spawn(diffSeconds);
+
+
 		// createZombie(diffSeconds);
 
 		// delete HelpText after ... seconds
@@ -151,7 +284,7 @@ class TD_World extends A_World {
 			}
 		}
 	}
-	
+
 	public void gameOver() {
 		while (true)
 			;

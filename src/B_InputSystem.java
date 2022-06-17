@@ -1,9 +1,12 @@
 import java.awt.event.*;
+import java.util.HashMap;
 
 class B_InputSystem implements A_InputSystem, KeyListener, MouseListener, MouseMotionListener {
 
 	// UserInput variables
 	private A_UserInput userInput = new A_UserInput();
+	
+	private HashMap<Integer,Integer> keys = userInput.getKeys();
 
 	public void mousePressed(MouseEvent evt) {
 		// an input Event occurs
@@ -30,8 +33,14 @@ class B_InputSystem implements A_InputSystem, KeyListener, MouseListener, MouseM
 
 	public void keyPressed(KeyEvent evt) {
 		userInput.isKeyEvent = true;
-		userInput.keyPressed = evt.getKeyChar();
+		userInput.keyPressed =   evt.getKeyCode();
+		 
+		 
+		 
+	 
+		
 	}
+	
 
 	public void mouseEntered(MouseEvent evt) {
 	}
@@ -42,13 +51,29 @@ class B_InputSystem implements A_InputSystem, KeyListener, MouseListener, MouseM
 	public void mouseClicked(MouseEvent evt) {
 	}
 
+ 
+	
 	public void keyReleased(KeyEvent evt) {
+	//	userInput.isKeyEvent = true;
+	//	 userInput.keyReleased = evt.getKeyCode();
+        
+		 
+		
+//		System.out.println(keys.get((Integer)evt.getKeyCode()));
+ 
+		 
+		
+		
 	}
 
 	public void keyTyped(KeyEvent evt) {
+	 
+		 
 	}
 
 	public A_UserInput getUserInput() {
 		return userInput;
 	}
+	
+	 
 }
