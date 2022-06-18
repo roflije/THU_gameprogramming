@@ -1,4 +1,4 @@
-import java.util.HashMap;
+import java.util.ArrayList;
 
 final class A_UserInput {
 	int mousePressedX, mousePressedY, mouseMovedX, mouseMovedY, mouseButton;
@@ -8,7 +8,7 @@ final class A_UserInput {
 	 int keyPressed,keyReleased;
 	 
 	// Will be needed later for n-key rollover  
-   private HashMap<Integer,Integer> keys = new HashMap<>();
+     ArrayList<Integer> keys = new ArrayList<>();
    
      
 	boolean isMouseEvent, isKeyEvent, isMousePressed;
@@ -18,13 +18,9 @@ final class A_UserInput {
 	final void clear() {
 		isMouseEvent = false;
 		isKeyEvent = false;
-	}
+	} 
 	
-
-	public HashMap<Integer,Integer> getKeys()
-	{
-		 return keys;
-		
+	public ArrayList<Integer> getKeys() {
+		return keys;
 	}
-	 
 }

@@ -1,12 +1,12 @@
 import java.awt.event.*;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 class B_InputSystem implements A_InputSystem, KeyListener, MouseListener, MouseMotionListener {
 
 	// UserInput variables
 	private A_UserInput userInput = new A_UserInput();
 	
-	private HashMap<Integer,Integer> keys = userInput.getKeys();
+     ArrayList<Integer>  keys = userInput.keys;
 
 	public void mousePressed(MouseEvent evt) {
 		// an input Event occurs
@@ -34,7 +34,15 @@ class B_InputSystem implements A_InputSystem, KeyListener, MouseListener, MouseM
 	public void keyPressed(KeyEvent evt) {
 		userInput.isKeyEvent = true;
 		userInput.keyPressed =   evt.getKeyCode();
-		 
+		
+		if(!keys.contains(evt.getKeyCode()))
+		keys.add((Integer)evt.getKeyCode());
+
+		
+		
+		System.out.println(evt.getKeyCode());
+
+		System.out.println(keys.size());
 		 
 		 
 	 
@@ -54,12 +62,14 @@ class B_InputSystem implements A_InputSystem, KeyListener, MouseListener, MouseM
  
 	
 	public void keyReleased(KeyEvent evt) {
-	//	userInput.isKeyEvent = true;
+	 	userInput.isKeyEvent = true;
 	//	 userInput.keyReleased = evt.getKeyCode();
         
-		 
-		
-//		System.out.println(keys.get((Integer)evt.getKeyCode()));
+		System.out.println(keys.size());
+		if(keys.contains(evt.getKeyCode()))
+		keys.remove((Integer)evt.getKeyCode());
+		System.out.println(keys.size());
+		System.out.println("Released");
  
 		 
 		
@@ -75,5 +85,7 @@ class B_InputSystem implements A_InputSystem, KeyListener, MouseListener, MouseM
 		return userInput;
 	}
 	
-	 
+	public ArrayList<Integer> getKeys() {
+		return keys;
+	}
 }

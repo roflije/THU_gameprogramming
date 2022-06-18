@@ -125,39 +125,67 @@ class TD_World extends A_World {
 		}
 
 
+//		if (userInput.isKeyEvent)  {
+//			if (userInput.keyPressed == KeyEvent.VK_W) {
+//				avatar.speed = 50;
+//				avatar.alfa = Math.PI * -0.5;
+//				System.out.println(avatar.speed);
+//			}
+//
+//
+//
+//		}
+
+		 
+
+
 		if (userInput.isKeyEvent)  {
-			if (userInput.keyPressed == KeyEvent.VK_W) {
+			if (userInput.keys.contains(KeyEvent.VK_W) && userInput.keys.size()== 1) {
+		        userInput.keys.toString();
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * -0.5;
-				System.out.println(avatar.speed);
+			//	System.out.println(avatar.speed);
 			}
 
 
 
 		}
-
+		
 		if (userInput.isKeyEvent)  {
-			if (userInput.keyPressed == KeyEvent.VK_W) {
-				avatar.speed = 50;
-				avatar.alfa = Math.PI * -0.5;
-				System.out.println(avatar.speed);
-			}
-
-
-
-		}
-
-
-		if (userInput.isKeyEvent)  {
-			if (userInput.keyReleased == KeyEvent.VK_W) {
+			if ( userInput.keys.size() == 0) {
+		       
 				avatar.speed = 0;
+			//	System.out.println(avatar.speed);
 			}
 
 
 
 		}
+		
+		
+		if (userInput.isKeyEvent)  {
+			if (userInput.keys.contains(KeyEvent.VK_W)&&
+				userInput.keys.contains(KeyEvent.VK_A) ) {
+		      
+				avatar.speed = 50;
+				avatar.alfa = Math.PI * -0.75;
+			//	System.out.println(avatar.speed);
+			}
+		}
+		
+		if (userInput.isKeyEvent)  {
+			if (userInput.keys.contains(KeyEvent.VK_W)&&
+				userInput.keys.contains(KeyEvent.VK_D)) {
+		      
+				avatar.speed = 50;
+				avatar.alfa = Math.PI * -0.25;
+			//	System.out.println(avatar.speed);
+			}
+		}
+		
+		
 		if (userInput.isKeyEvent) {
-			if (userInput.keyPressed == KeyEvent.VK_A) {
+			if (userInput.keyPressed == KeyEvent.VK_A && userInput.keys.size()== 1) {
 
 
 				if(avatar.alfa == Math.PI * 2)
@@ -165,35 +193,48 @@ class TD_World extends A_World {
 
 					avatar.speed = 50;
 				avatar.alfa = -Math.PI;
-				System.out.println(avatar.speed);
+			//	System.out.println(avatar.speed);
+			}
+		}
+		
+		if (userInput.isKeyEvent)  {
+			if (userInput.keys.contains(KeyEvent.VK_A)&&
+				userInput.keys.contains(KeyEvent.VK_S)) {
+		      
+				avatar.speed = 50;
+				avatar.alfa = Math.PI * -1.25;
+			//	System.out.println(avatar.speed);
 			}
 		}
 
 		if (userInput.isKeyEvent) {
-			if (userInput.keyPressed == KeyEvent.VK_S) {
+			if (userInput.keyPressed == KeyEvent.VK_S && userInput.keys.size()== 1) {
 
 				avatar.speed = 50;
 				avatar.alfa = -Math.PI * 1.5;
-				System.out.println(avatar.speed);
+				//System.out.println(avatar.speed);
+			}
+		}
+		
+		if (userInput.isKeyEvent)  {
+			if (userInput.keys.contains(KeyEvent.VK_S)&&
+				userInput.keys.contains(KeyEvent.VK_D)) {
+		      
+				avatar.speed = 50;
+				avatar.alfa = Math.PI * 0.25;
+			//	System.out.println(avatar.speed);
 			}
 		}
 
 
 		if (userInput.isKeyEvent) {
-			if (userInput.keyPressed == KeyEvent.VK_D) {
+			if (userInput.keyPressed == KeyEvent.VK_D && userInput.keys.size()== 1) {
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * 2;
 				System.out.println(avatar.speed);
 			}
 
 		}
-
-		if (userInput.isKeyEvent) {
-			if (userInput.keyPressed == KeyEvent.VK_SPACE) {
-				avatar.speed = 0;
-			}
-		}
-
 
 
 	}
