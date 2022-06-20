@@ -32,21 +32,10 @@ class B_InputSystem implements A_InputSystem, KeyListener, MouseListener, MouseM
 	}
 
 	public void keyPressed(KeyEvent evt) {
-		userInput.isKeyEvent = true;
+		userInput.isKeyPressEvent = true;
 		userInput.keyPressed =   evt.getKeyCode();
-		
 		if(!keys.contains(evt.getKeyCode()))
-		keys.add((Integer)evt.getKeyCode());
-
-		
-		
-		System.out.println(evt.getKeyCode());
-
-		System.out.println(keys.size());
-		 
-		 
-	 
-		
+		keys.add((Integer)evt.getKeyCode());	
 	}
 	
 
@@ -62,18 +51,10 @@ class B_InputSystem implements A_InputSystem, KeyListener, MouseListener, MouseM
  
 	
 	public void keyReleased(KeyEvent evt) {
-	 	userInput.isKeyEvent = true;
-	//	 userInput.keyReleased = evt.getKeyCode();
-        
+	 	userInput.isKeyReleaseEvent = true;
 		System.out.println(keys.size());
 		if(keys.contains(evt.getKeyCode()))
 		keys.remove((Integer)evt.getKeyCode());
-		System.out.println(keys.size());
-		System.out.println("Released");
- 
-		 
-		
-		
 	}
 
 	public void keyTyped(KeyEvent evt) {

@@ -11,13 +11,14 @@ final class A_UserInput {
      ArrayList<Integer> keys = new ArrayList<>();
    
      
-	boolean isMouseEvent, isKeyEvent, isMousePressed;
+	boolean isMouseEvent, isKeyPressEvent,isKeyReleaseEvent, isMousePressed;
 	A_UserInput() {
 		this.clear();
 	}
 	final void clear() {
 		isMouseEvent = false;
-		isKeyEvent = false;
+		isKeyPressEvent = false;
+		isKeyReleaseEvent = false;
 	} 
 	
 	public ArrayList<Integer> getKeys() {

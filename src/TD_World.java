@@ -38,9 +38,9 @@ class TD_World extends A_World {
 		initRoute = A_Square.getPathFromCellList(BFS.shortestPath(startend[0], startend[1]));
 		// add one zombie
 		startPoint = startSquare.getMiddle();
-		//TD_AlienAI monster = new TD_AlienAI(startSquare, initRoute, startPoint[0], startPoint[1], 10);
-		//gameObjects.add(monster);
-		//monsterObject.add(monster);
+		TD_AlienAI monster = new TD_AlienAI(startSquare, initRoute, startPoint[0], startPoint[1], 10);
+		gameObjects.add(monster);
+		monsterObject.add(monster);
 
 		counterC = new TD_Counter(20, 80);
 		counterH = new TD_CounterHealth(20, 40);
@@ -118,125 +118,94 @@ class TD_World extends A_World {
 		//
 		// Keyboard events
 		//
-		if (userInput.isKeyEvent) {
+		if (userInput.isKeyPressEvent) {
 			if (userInput.keyPressed == '2') {
 				toggleBuilding();
+				
 			}
 		}
 
 
-//		if (userInput.isKeyEvent)  {
-//			if (userInput.keyPressed == KeyEvent.VK_W) {
-//				avatar.speed = 50;
-//				avatar.alfa = Math.PI * -0.5;
-//				System.out.println(avatar.speed);
-//			}
-//
-//
-//
-//		}
-
-		 
-
-
-		if (userInput.isKeyEvent)  {
-			if (userInput.keys.contains(KeyEvent.VK_W) && userInput.keys.size()== 1) {
-		        userInput.keys.toString();
+		if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent)  {
+			if (userInput.keys.contains(KeyEvent.VK_W)&& userInput.keys.size()== 1) {
+				userInput.keys.toString();
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * -0.5;
-			//	System.out.println(avatar.speed);
+				//	System.out.println(avatar.speed);
 			}
-
-
-
 		}
-		
-		if (userInput.isKeyEvent)  {
+
+		if (userInput.isKeyReleaseEvent)  {
 			if ( userInput.keys.size() == 0) {
-		       
 				avatar.speed = 0;
-			//	System.out.println(avatar.speed);
+				//	System.out.println(avatar.speed);
 			}
-
-
-
 		}
-		
-		
-		if (userInput.isKeyEvent)  {
+
+
+		if (userInput.isKeyPressEvent)  {
 			if (userInput.keys.contains(KeyEvent.VK_W)&&
-				userInput.keys.contains(KeyEvent.VK_A) ) {
-		      
+					userInput.keys.contains(KeyEvent.VK_A) ) {
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * -0.75;
-			//	System.out.println(avatar.speed);
+				//	System.out.println(avatar.speed);
 			}
 		}
-		
-		if (userInput.isKeyEvent)  {
+
+		if (userInput.isKeyPressEvent)  {
 			if (userInput.keys.contains(KeyEvent.VK_W)&&
-				userInput.keys.contains(KeyEvent.VK_D)) {
-		      
+					userInput.keys.contains(KeyEvent.VK_D)) {
+
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * -0.25;
-			//	System.out.println(avatar.speed);
+				//	System.out.println(avatar.speed);
 			}
 		}
-		
-		
-		if (userInput.isKeyEvent) {
-			if (userInput.keyPressed == KeyEvent.VK_A && userInput.keys.size()== 1) {
 
 
+		if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
+			if (userInput.keys.contains(KeyEvent.VK_A)&& userInput.keys.size()== 1) {
 				if(avatar.alfa == Math.PI * 2)
-
-
 					avatar.speed = 50;
 				avatar.alfa = -Math.PI;
-			//	System.out.println(avatar.speed);
+				//	System.out.println(avatar.speed);
 			}
 		}
-		
-		if (userInput.isKeyEvent)  {
+
+		if (userInput.isKeyPressEvent)  {
 			if (userInput.keys.contains(KeyEvent.VK_A)&&
-				userInput.keys.contains(KeyEvent.VK_S)) {
-		      
+					userInput.keys.contains(KeyEvent.VK_S)) {
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * -1.25;
-			//	System.out.println(avatar.speed);
+				//	System.out.println(avatar.speed);
 			}
 		}
 
-		if (userInput.isKeyEvent) {
-			if (userInput.keyPressed == KeyEvent.VK_S && userInput.keys.size()== 1) {
-
+		if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
+			if (userInput.keys.contains(KeyEvent.VK_S)&& userInput.keys.size()== 1) {
 				avatar.speed = 50;
 				avatar.alfa = -Math.PI * 1.5;
 				//System.out.println(avatar.speed);
 			}
 		}
-		
-		if (userInput.isKeyEvent)  {
+
+		if (userInput.isKeyPressEvent)  {
 			if (userInput.keys.contains(KeyEvent.VK_S)&&
-				userInput.keys.contains(KeyEvent.VK_D)) {
-		      
+					userInput.keys.contains(KeyEvent.VK_D)) {
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * 0.25;
-			//	System.out.println(avatar.speed);
+				//	System.out.println(avatar.speed);
 			}
 		}
 
 
-		if (userInput.isKeyEvent) {
-			if (userInput.keyPressed == KeyEvent.VK_D && userInput.keys.size()== 1) {
+		if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
+			if (userInput.keys.contains(KeyEvent.VK_D) && userInput.keys.size()== 1) {
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * 2;
-				System.out.println(avatar.speed);
+				//System.out.println(avatar.speed);
 			}
-
 		}
-
-
 	}
 
 
@@ -266,7 +235,6 @@ class TD_World extends A_World {
 
 	protected void spawn(double diffSeconds)
 	{
-
 		final double INTERVAL = A_Const.SPAWN_INTERVAL;
 
 		timeSinceLastShot += diffSeconds;
@@ -298,22 +266,12 @@ class TD_World extends A_World {
 			// else add monster to world
 			this.gameObjects.add(monster);
 			this.monsterObject.add(monster);
-
-
 		}
-
-
-
-
 
 	}
 
 	protected void createNewObjects(double diffSeconds) {
-
-
-		spawn(diffSeconds);
-
-
+		//spawn(diffSeconds);
 		// createZombie(diffSeconds);
 
 		// delete HelpText after ... seconds
