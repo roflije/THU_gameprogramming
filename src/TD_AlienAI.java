@@ -17,8 +17,11 @@ class TD_AlienAI extends A_GameObject {
 		super(x, y, 0, 40, SHAPE);
 		this.current = spawn;
 		this.isMoving = true;
-		this.route = route;
-		this.dest = route.pollFirst();
+		this.route = new LinkedList<A_Square>();
+		for(A_Square sqr: route){
+			this.route.add(new A_Square(sqr));
+		}
+		this.dest = this.route.pollFirst();
 		// turn left or right to clear
 	}
 
@@ -35,7 +38,6 @@ class TD_AlienAI extends A_GameObject {
 		if(newRoute == null)
 			return false;
 		this.route = newRoute;
-		System.out.println("NEW MONSTER PATH: " + this.route);
 		this.routeChanged = true;
 		return true;
 	}
@@ -50,7 +52,6 @@ class TD_AlienAI extends A_GameObject {
 			dest = route.pollFirst();
 			destCoords = dest.getMiddle();
 			this.setDestination(destCoords[0], destCoords[1]);
-			System.out.println("NEW TARGET: ["+destCoords[0]+","+destCoords[1]+"]");
 			super.move(diffSeconds);
 		}
 

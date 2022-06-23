@@ -83,6 +83,8 @@ class TD_World extends A_World {
 						System.out.println("Cannot create path from start!");
 						sqr.notTake();
 					} else {
+						System.out.println("updating route");
+						this.initRoute = A_Square.getPathFromCellList(cells);
 						boolean cannotCreate = false;
 						for (TD_AlienAI a : monsterObject) {
 							if (!a.updatePath()) // sqr.isWithin(a.x, a.y)
@@ -257,6 +259,9 @@ class TD_World extends A_World {
 
 			// if collisions occur, cancel
 			TD_AlienAI monster = new TD_AlienAI(startSquare , initRoute, startPoint[0], startPoint[1], 10);
+			System.out.println("route:");
+			System.out.println(this.initRoute);
+			System.out.println("---");
 			//				A_GameObjectList list = A_GameObject.physicsSystem.getCollisions(monster);
 			//				if(list.size()!=0)
 			//				{ timeSinceLastShot = INTERVAL;
@@ -271,7 +276,7 @@ class TD_World extends A_World {
 	}
 
 	protected void createNewObjects(double diffSeconds) {
-		//spawn(diffSeconds);
+		spawn(diffSeconds);
 		// createZombie(diffSeconds);
 
 		// delete HelpText after ... seconds

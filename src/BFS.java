@@ -48,7 +48,6 @@ public class BFS {
 	    
 	    //compose the path if path exists
 	    if (dest == null) {
-	    	System.out.println("there is no path.");
 	        return null;
 	    } else {
 	        LinkedList<Cell> path = new LinkedList<>();
