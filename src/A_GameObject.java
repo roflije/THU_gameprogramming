@@ -1,4 +1,4 @@
-abstract class A_GameObject {
+ abstract class A_GameObject   {
 	protected double x, y;
 	protected double alfa = 0;
 	protected double speed = 0;

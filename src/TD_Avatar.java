@@ -6,8 +6,8 @@ public class TD_Avatar extends A_GameObject {
 	private TD_CounterMonsterHealth counter;
 	
 	public TD_Avatar(double x, double y) {
-		super(x, y, 0, 200, SHAPE);
-		this.isMoving = false;
+		super(x, y, 0, 0, SHAPE);
+		//this.isMoving = false;
 
         counter = new TD_CounterMonsterHealth((int)x,(int)y);
 		

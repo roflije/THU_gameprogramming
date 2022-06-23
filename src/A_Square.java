@@ -21,6 +21,16 @@ public class A_Square {
 		this.taken = false;
 	}
 
+	public A_Square(A_Square cpy){
+		this.sX = cpy.sX;
+		this.sY = cpy.sY;
+		this.eX = cpy.eX;
+		this.eY = cpy.eY;
+		this.i = cpy.i;
+		this.j = cpy.j;
+		this.taken = cpy.taken;
+	}
+
 	public double getsX() {
 		return sX;
 	}
