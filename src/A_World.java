@@ -87,6 +87,7 @@ abstract class A_World {
 
 			// create new objects if needed
 			createNewObjects(millisDiff / 1000.0);
+			deleteOldObjects();
 		}
 	}
 
@@ -114,4 +115,5 @@ abstract class A_World {
 
 	protected abstract void gameOver();
 
+	protected abstract void deleteOldObjects();
 }

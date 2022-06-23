@@ -13,9 +13,9 @@ class TD_World extends A_World {
 
 	private ArrayList<TD_AlienAI> monsterObject = new ArrayList<TD_AlienAI>();
 	private LinkedList<A_Square> initRoute;
-	private  double[] startPoint;
-	private  A_Square startSquare;
-
+	private double[] startPoint;
+	private A_Square startSquare;
+	private A_Square endSquare;
 	private double lifeHelpText = 10.0;
 	int[][] startend = { { 0, 10 }, { 24, 10 } };
 
@@ -27,7 +27,7 @@ class TD_World extends A_World {
 		}
 		startSquare = squareObjects[0][10];
 		startSquare.setStart();
-		A_Square endSquare = squareObjects[24][10];
+		endSquare = squareObjects[24][10];
 		endSquare.setEnd();
 		// add the Avatar
 		avatar = new TD_Avatar(400, 500);
@@ -49,7 +49,6 @@ class TD_World extends A_World {
 		textObjects.add(counterC);
 		textObjects.add(counterH);
 		textObjects.add(helpText);
-
 
 	}
 
@@ -120,36 +119,34 @@ class TD_World extends A_World {
 		if (userInput.isKeyPressEvent) {
 			if (userInput.keyPressed == KeyEvent.VK_TAB) {
 				toggleBuilding();
-				
+
 			}
 		}
 
-
-		if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent)  {
-			if (userInput.keys.contains(KeyEvent.VK_W)&& userInput.keys.size()== 1) {
+		if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
+			if (userInput.keys.contains(KeyEvent.VK_W) && userInput.keys.size() == 1) {
 				userInput.keys.toString();
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * -0.5;
 			}
 		}
 
-		if (userInput.isKeyReleaseEvent)  {
-			if ( userInput.keys.size() == 0) {
+		if (userInput.isKeyReleaseEvent) {
+			if (userInput.keys.size() == 0) {
 				avatar.speed = 0;
 			}
 		}
 
-
-		if (userInput.isKeyPressEvent)  {
-			if (userInput.keys.contains(KeyEvent.VK_W)&&
-					userInput.keys.contains(KeyEvent.VK_A) ) {
+		if (userInput.isKeyPressEvent) {
+			if (userInput.keys.contains(KeyEvent.VK_W) &&
+					userInput.keys.contains(KeyEvent.VK_A)) {
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * -0.75;
 			}
 		}
 
-		if (userInput.isKeyPressEvent)  {
-			if (userInput.keys.contains(KeyEvent.VK_W)&&
+		if (userInput.isKeyPressEvent) {
+			if (userInput.keys.contains(KeyEvent.VK_W) &&
 					userInput.keys.contains(KeyEvent.VK_D)) {
 
 				avatar.speed = 50;
@@ -157,17 +154,16 @@ class TD_World extends A_World {
 			}
 		}
 
-
 		if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
-			if (userInput.keys.contains(KeyEvent.VK_A)&& userInput.keys.size()== 1) {
-				if(avatar.alfa == Math.PI * 2)
+			if (userInput.keys.contains(KeyEvent.VK_A) && userInput.keys.size() == 1) {
+				if (avatar.alfa == Math.PI * 2)
 					avatar.speed = 50;
 				avatar.alfa = -Math.PI;
 			}
 		}
 
-		if (userInput.isKeyPressEvent)  {
-			if (userInput.keys.contains(KeyEvent.VK_A)&&
+		if (userInput.isKeyPressEvent) {
+			if (userInput.keys.contains(KeyEvent.VK_A) &&
 					userInput.keys.contains(KeyEvent.VK_S)) {
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * -1.25;
@@ -175,34 +171,27 @@ class TD_World extends A_World {
 		}
 
 		if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
-			if (userInput.keys.contains(KeyEvent.VK_S)&& userInput.keys.size()== 1) {
+			if (userInput.keys.contains(KeyEvent.VK_S) && userInput.keys.size() == 1) {
 				avatar.speed = 50;
 				avatar.alfa = -Math.PI * 1.5;
 			}
 		}
 
-		if (userInput.isKeyPressEvent)  {
-			if (userInput.keys.contains(KeyEvent.VK_S)&&
+		if (userInput.isKeyPressEvent) {
+			if (userInput.keys.contains(KeyEvent.VK_S) &&
 					userInput.keys.contains(KeyEvent.VK_D)) {
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * 0.25;
 			}
 		}
 
-
 		if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
-			if (userInput.keys.contains(KeyEvent.VK_D) && userInput.keys.size()== 1) {
+			if (userInput.keys.contains(KeyEvent.VK_D) && userInput.keys.size() == 1) {
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * 2;
 			}
 		}
 	}
-
-
-
-
-
-
 
 	private void updateMatrix() {
 		for (int i = 0; i < 25; ++i) {
@@ -216,42 +205,41 @@ class TD_World extends A_World {
 		}
 	}
 
-	/* This functions works randomly 
+	/*
+	 * This functions works randomly
 	 * After a fixed time it results to null pointer for bigger intervals.
 	 * For shorter intervals it crashes after certain amount of aliens/zombies
-	 * Collusion detection and BFS works at random. Sometimes monster change they course
+	 * Collusion detection and BFS works at random. Sometimes monster change they
+	 * course
 	 * sometimes not.
 	 */
 
-	protected void spawn(double diffSeconds)
-	{
+	protected void spawn(double diffSeconds) {
 		final double INTERVAL = A_Const.SPAWN_INTERVAL;
 
 		timeSinceLastShot += diffSeconds;
-		if(timeSinceLastShot>INTERVAL)
-		{
+		if (timeSinceLastShot > INTERVAL) {
 			timeSinceLastShot -= INTERVAL;
 
 			// create new Zombie
-			//				double x = 20+Math.random()*960;
-			//				double y = 20+Math.random()*760;
+			// double x = 20+Math.random()*960;
+			// double y = 20+Math.random()*760;
 
 			// if too close to Avatar, cancel
-			//				double dx = x-avatar.x;
-			//				double dy = y-avatar.y;
-			//				if(dx*dx+dy*dy < 200*200) 
-			//				{ timeSinceLastShot = INTERVAL;
-			//				return;
-			//				}
-
+			// double dx = x-avatar.x;
+			// double dy = y-avatar.y;
+			// if(dx*dx+dy*dy < 200*200)
+			// { timeSinceLastShot = INTERVAL;
+			// return;
+			// }
 
 			// if collisions occur, cancel
-			TD_AlienAI monster = new TD_AlienAI(startSquare , initRoute, startPoint[0], startPoint[1], 10);
-			//				A_GameObjectList list = A_GameObject.physicsSystem.getCollisions(monster);
-			//				if(list.size()!=0)
-			//				{ timeSinceLastShot = INTERVAL;
-			//				return;
-			//				}
+			TD_AlienAI monster = new TD_AlienAI(startSquare, initRoute, startPoint[0], startPoint[1], 10);
+			// A_GameObjectList list = A_GameObject.physicsSystem.getCollisions(monster);
+			// if(list.size()!=0)
+			// { timeSinceLastShot = INTERVAL;
+			// return;
+			// }
 
 			// else add monster to world
 			this.gameObjects.add(monster);
@@ -271,6 +259,26 @@ class TD_World extends A_World {
 				textObjects.remove(helpText);
 				helpText = null;
 			}
+		}
+	}
+
+	protected void deleteOldObjects() {
+		ArrayList<TD_AlienAI> toBeRemoved = new ArrayList<TD_AlienAI>();
+		for (TD_AlienAI alien : monsterObject) {
+			if (this.endSquare.isCloseCenter(alien.x, alien.y)) {
+				counterH.setNumber(counterH.getNumber()-1);
+				if (counterH.getNumber() == 0) {
+					gameOver();
+				}
+				toBeRemoved.add(alien);
+			}
+			if (!alien.isLiving)
+				toBeRemoved.add(alien);
+		}
+
+		for (TD_AlienAI alien : toBeRemoved) {
+			this.gameObjects.remove(alien);
+			this.monsterObject.remove(alien);
 		}
 	}
 

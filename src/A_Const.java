@@ -10,5 +10,5 @@ final class A_Const
   static final double SPAWN_INTERVAL = 5;
   static final double SHOOT_DELAY = 1.0;
   static final double CLOSE_DISTANCE = 3.0;
-  static final double HEALTH = 30;
+  static final int HEALTH = 1;
 }
