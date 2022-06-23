@@ -80,10 +80,8 @@ class TD_World extends A_World {
 					updateMatrix();
 					LinkedList<Cell> cells = BFS.shortestPath(startend[0], startend[1]);
 					if (cells == null) {
-						System.out.println("Cannot create path from start!");
 						sqr.notTake();
 					} else {
-						System.out.println("updating route");
 						this.initRoute = A_Square.getPathFromCellList(cells);
 						boolean cannotCreate = false;
 						for (TD_AlienAI a : monsterObject) {
@@ -91,7 +89,6 @@ class TD_World extends A_World {
 								cannotCreate = true;
 						}
 						if (cannotCreate) {
-							System.out.println("Cannot create path from start!");
 							sqr.notTake();
 						} else {
 							double[] middle = sqr.getMiddle();
@@ -121,7 +118,7 @@ class TD_World extends A_World {
 		// Keyboard events
 		//
 		if (userInput.isKeyPressEvent) {
-			if (userInput.keyPressed == '2') {
+			if (userInput.keyPressed == KeyEvent.VK_TAB) {
 				toggleBuilding();
 				
 			}
@@ -133,14 +130,12 @@ class TD_World extends A_World {
 				userInput.keys.toString();
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * -0.5;
-				//	System.out.println(avatar.speed);
 			}
 		}
 
 		if (userInput.isKeyReleaseEvent)  {
 			if ( userInput.keys.size() == 0) {
 				avatar.speed = 0;
-				//	System.out.println(avatar.speed);
 			}
 		}
 
@@ -150,7 +145,6 @@ class TD_World extends A_World {
 					userInput.keys.contains(KeyEvent.VK_A) ) {
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * -0.75;
-				//	System.out.println(avatar.speed);
 			}
 		}
 
@@ -160,7 +154,6 @@ class TD_World extends A_World {
 
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * -0.25;
-				//	System.out.println(avatar.speed);
 			}
 		}
 
@@ -170,7 +163,6 @@ class TD_World extends A_World {
 				if(avatar.alfa == Math.PI * 2)
 					avatar.speed = 50;
 				avatar.alfa = -Math.PI;
-				//	System.out.println(avatar.speed);
 			}
 		}
 
@@ -179,7 +171,6 @@ class TD_World extends A_World {
 					userInput.keys.contains(KeyEvent.VK_S)) {
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * -1.25;
-				//	System.out.println(avatar.speed);
 			}
 		}
 
@@ -187,7 +178,6 @@ class TD_World extends A_World {
 			if (userInput.keys.contains(KeyEvent.VK_S)&& userInput.keys.size()== 1) {
 				avatar.speed = 50;
 				avatar.alfa = -Math.PI * 1.5;
-				//System.out.println(avatar.speed);
 			}
 		}
 
@@ -196,7 +186,6 @@ class TD_World extends A_World {
 					userInput.keys.contains(KeyEvent.VK_D)) {
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * 0.25;
-				//	System.out.println(avatar.speed);
 			}
 		}
 
@@ -205,7 +194,6 @@ class TD_World extends A_World {
 			if (userInput.keys.contains(KeyEvent.VK_D) && userInput.keys.size()== 1) {
 				avatar.speed = 50;
 				avatar.alfa = Math.PI * 2;
-				//System.out.println(avatar.speed);
 			}
 		}
 	}
@@ -259,9 +247,6 @@ class TD_World extends A_World {
 
 			// if collisions occur, cancel
 			TD_AlienAI monster = new TD_AlienAI(startSquare , initRoute, startPoint[0], startPoint[1], 10);
-			System.out.println("route:");
-			System.out.println(this.initRoute);
-			System.out.println("---");
 			//				A_GameObjectList list = A_GameObject.physicsSystem.getCollisions(monster);
 			//				if(list.size()!=0)
 			//				{ timeSinceLastShot = INTERVAL;

@@ -9,7 +9,6 @@ public class BFS {
 		int dx = end[0], dy = end[1];	
 		//if start or end value is 0, return
 		if (matrix[sx][sy] == 0 || matrix[dx][dy] == 0) {
-			//System.out.println("There is no path.");
 			return null;  
 		}
 		//initialize the cells 

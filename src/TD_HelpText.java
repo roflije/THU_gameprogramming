@@ -10,7 +10,7 @@ class TD_HelpText extends A_TextObject{
 	}
 
 	public String toString(){ 
-		String display = "MOVE:WASD        SHOOT:Mouse left        Building mode: 2";
+		String display = "MOVE:WASD        SHOOT:Mouse left        Building mode: TAB";
 		return display;
 	}
 

@@ -52,7 +52,6 @@ class B_InputSystem implements A_InputSystem, KeyListener, MouseListener, MouseM
 	
 	public void keyReleased(KeyEvent evt) {
 	 	userInput.isKeyReleaseEvent = true;
-		System.out.println(keys.size());
 		if(keys.contains(evt.getKeyCode()))
 		keys.remove((Integer)evt.getKeyCode());
 	}

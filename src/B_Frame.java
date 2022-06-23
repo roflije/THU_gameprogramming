@@ -14,6 +14,7 @@ class B_Frame extends JFrame implements A_Frame {
 
 		panel.setFocusable(true);
 		panel.requestFocusInWindow();
+		panel.setFocusTraversalKeysEnabled(false);
 
 		this.setContentPane(panel);
 	}
