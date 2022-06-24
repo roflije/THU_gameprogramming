@@ -4,11 +4,11 @@
 
 import java.awt.Color;
 
-class TD_Counter extends A_TextObject
+class TD_CounterAlien extends A_TextObject
 {
   private int number = 0;
 	
-  public TD_Counter(int x, int y)
+  public TD_CounterAlien(int x, int y)
   { super(x,y, new B_Shape(0,new Color(255,0,0)));
   }
   
@@ -19,4 +19,5 @@ class TD_Counter extends A_TextObject
   }
   
   public void increment(){ number++; }
+  public void decrement() { number--; }
 }

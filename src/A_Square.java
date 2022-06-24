@@ -1,16 +1,25 @@
 import java.util.LinkedList;
 
 public class A_Square {
-	private double sX;
-	private double sY;
-	private double eX;
-	private double eY;
-	private int i;
-	private int j;
-	private boolean taken;
-	private boolean isStart = false;
-	private boolean isEnd = false;
+	private double sX; // start X
+	private double sY; // start Y
+	private double eX; // end X
+	private double eY; // end Y
+	private int i; // i-index in the array
+	private int j; // j-index in the array
+	private boolean taken; // square taken by a building
+	private boolean isStart = false; // is start 
+	private boolean isEnd = false; // is end
 
+	/**
+	 * Default constructor
+	 * @param sx Start X
+	 * @param sy Start Y
+	 * @param ex End X
+	 * @param ey End Y
+	 * @param i i-index in the array
+	 * @param j j-index in the array
+	 */
 	public A_Square(int sx, int sy, int ex, int ey, int i, int j) {
 		this.sX = sx;
 		this.sY = sy;
@@ -21,6 +30,10 @@ public class A_Square {
 		this.taken = false;
 	}
 
+	/**
+	 * Copy deep constructor
+	 * @param cpy Square to be copied
+	 */
 	public A_Square(A_Square cpy){
 		this.sX = cpy.sX;
 		this.sY = cpy.sY;
@@ -51,6 +64,10 @@ public class A_Square {
 		return "X1: " + sX + " X2: " + eX + " | Y1: " + sY + " Y2: " + eY;
 	}
 
+	/**
+	 * Returns middle of the square
+	 * @return
+	 */
 	public double[] getMiddle() {
 		double[] arr = new double[2];
 		arr[0] = sX + ((eX - sX) / 2);
@@ -58,9 +75,22 @@ public class A_Square {
 		return arr;
 	}
 
+	/**
+	 * Checks if point is within the square
+	 * @param x x of the point
+	 * @param y y of the point
+	 * @return boolean Is within the square?
+	 */
 	public boolean isWithin(double x, double y) {
 		return (x >= sX && x <= eX) && (y >= sY && y <= eY);
 	}
+
+	/**
+	 * Checks if point is close to the center of the square
+	 * @param x x of the point
+	 * @param y y of the point
+	 * @return boolean Is close to the center of the square?
+	 */
 	public boolean isCloseCenter(double x, double y){
 		double[] arr = getMiddle();
 		return (
@@ -107,6 +137,11 @@ public class A_Square {
 		return this.j;
 	}
 
+	/**
+	 * Static method that returns LinkedList of A_Squares from LinkedList of Cells
+	 * @param path
+	 * @return
+	 */
 	public static LinkedList<A_Square> getPathFromCellList(LinkedList<Cell> path) {
 		if (path == null)
 			return null;

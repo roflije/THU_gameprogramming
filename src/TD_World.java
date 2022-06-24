@@ -3,15 +3,15 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 class TD_World extends A_World {
-	public static int[][] matrix = new int[25][21];
+	public static int[][] matrix = new int[25][21]; // 0-1 matrix for bfs
 
 	private double timeSinceLastShot = 0;
 
-	private TD_CounterHealth counterH;
-	private TD_Counter counterC;
-	private TD_HelpText helpText;
+	private TD_CounterHealth counterH; // health
+	private TD_CounterAlien counterA; // monsters
+	private TD_HelpText helpText; // helptext
 
-	private ArrayList<TD_AlienAI> monsterObject = new ArrayList<TD_AlienAI>();
+	private ArrayList<TD_AlienAI> alienObjects = new ArrayList<TD_AlienAI>(); // stores monsters
 	private LinkedList<A_Square> initRoute;
 	private double[] startPoint;
 	private A_Square startSquare;
@@ -20,13 +20,16 @@ class TD_World extends A_World {
 	int[][] startend = { { 0, 10 }, { 24, 10 } };
 
 	protected void init() {
+		// create square objects for map grid
 		for (int x = 0, i = 0; x <= 960; x = x + 40, ++i) {
 			for (int y = 0, j = 0; y <= 800; y = y + 40, ++j) {
 				squareObjects[i][j] = new A_Square(x, y, x + 40, y + 40, i, j);
 			}
 		}
+		// set starting square
 		startSquare = squareObjects[0][10];
 		startSquare.setStart();
+		// set ending square
 		endSquare = squareObjects[24][10];
 		endSquare.setEnd();
 		// add the Avatar
@@ -36,60 +39,57 @@ class TD_World extends A_World {
 		// calculate initial route
 		updateMatrix();
 		initRoute = A_Square.getPathFromCellList(BFS.shortestPath(startend[0], startend[1]));
-		// add one zombie
+		// add one alien
 		startPoint = startSquare.getMiddle();
-		TD_AlienAI monster = new TD_AlienAI(startSquare, initRoute, startPoint[0], startPoint[1], 10);
-		gameObjects.add(monster);
-		monsterObject.add(monster);
+		spawn(0);
 
-		counterC = new TD_Counter(20, 80);
+		counterA = new TD_CounterAlien(20, 80);
 		counterH = new TD_CounterHealth(20, 40);
 		helpText = new TD_HelpText(100, 400);
 
-		textObjects.add(counterC);
+		textObjects.add(counterA);
 		textObjects.add(counterH);
 		textObjects.add(helpText);
 
 	}
 
 	protected void processUserInput(A_UserInput userInput, double diffSeconds) {
-		// distinguish if Avatar shall move or shoots
 		int button = userInput.mouseButton;
-
-		//
+		// mouse button pressed
 		if (userInput.isMouseEvent) {
-			if (button == 1 && super.isBuilding) {
+			if (button == 1 && super.isBuilding) { // left click in building mode
 				A_Square sqr = null;
+				// find on which square the mouse click happend
 				int i = 0;
 				int j = 0;
-				boolean loop = true;
-				for (int ii = 0; ii < 25 && loop; ++ii)
-					for (int jj = 0; jj < 21 && loop; ++jj)
+				for (int ii = 0; ii < 25; ++ii) // && loop
+					for (int jj = 0; jj < 21; ++jj) // && loop
 						if (squareObjects[ii][jj].isWithin((double) userInput.mousePressedX,
 								(double) userInput.mousePressedY)) {
 							i = ii;
 							j = jj;
 						}
-				if (i != 25 && j != 21) {
+				if (i != 25 && j != 21)
 					sqr = squareObjects[i][j];
-				}
-				;
-				if (sqr != null && !sqr.getTaken()) {
-					sqr.take();
-					updateMatrix();
-					LinkedList<Cell> cells = BFS.shortestPath(startend[0], startend[1]);
-					if (cells == null) {
+				if (sqr != null && !sqr.getTaken()) { // if square is not null and square is not taken, prepare to build
+					sqr.take(); // mark square as taken
+					updateMatrix(); // update matrix with newly marked square
+					LinkedList<Cell> cells = BFS.shortestPath(startend[0], startend[1]); // calculate if new path
+																							// possible
+					if (cells == null) { // if no path (cannot build), free the square
 						sqr.notTake();
 					} else {
-						this.initRoute = A_Square.getPathFromCellList(cells);
+						this.initRoute = A_Square.getPathFromCellList(cells); // update initial route for monsters with
+																				// new route
 						boolean cannotCreate = false;
-						for (TD_AlienAI a : monsterObject) {
+						for (TD_AlienAI a : alienObjects) { // check if can create path for every alien that is on the
+															// map already
 							if (!a.updatePath()) // sqr.isWithin(a.x, a.y)
-								cannotCreate = true;
+								cannotCreate = true; // if not, set flag
 						}
-						if (cannotCreate) {
+						if (cannotCreate) { // if some alien cannot reach destination, free the square
 							sqr.notTake();
-						} else {
+						} else { // else spawn tower
 							double[] middle = sqr.getMiddle();
 							gameObjects.add(new TD_Turret(middle[0], middle[1], 20));
 						}
@@ -193,6 +193,9 @@ class TD_World extends A_World {
 		}
 	}
 
+	/**
+	 * Updates matrix for BFS
+	 */
 	private void updateMatrix() {
 		for (int i = 0; i < 25; ++i) {
 			for (int j = 0; j < 21; ++j) {
@@ -205,13 +208,10 @@ class TD_World extends A_World {
 		}
 	}
 
-	/*
-	 * This functions works randomly
-	 * After a fixed time it results to null pointer for bigger intervals.
-	 * For shorter intervals it crashes after certain amount of aliens/zombies
-	 * Collusion detection and BFS works at random. Sometimes monster change they
-	 * course
-	 * sometimes not.
+	/**
+	 * Spawns alien object
+	 * 
+	 * @param double diffSeconds - time elapsed
 	 */
 
 	protected void spawn(double diffSeconds) {
@@ -220,38 +220,21 @@ class TD_World extends A_World {
 		timeSinceLastShot += diffSeconds;
 		if (timeSinceLastShot > INTERVAL) {
 			timeSinceLastShot -= INTERVAL;
-
-			// create new Zombie
-			// double x = 20+Math.random()*960;
-			// double y = 20+Math.random()*760;
-
-			// if too close to Avatar, cancel
-			// double dx = x-avatar.x;
-			// double dy = y-avatar.y;
-			// if(dx*dx+dy*dy < 200*200)
-			// { timeSinceLastShot = INTERVAL;
-			// return;
-			// }
-
-			// if collisions occur, cancel
-			TD_AlienAI monster = new TD_AlienAI(startSquare, initRoute, startPoint[0], startPoint[1], 10);
-			// A_GameObjectList list = A_GameObject.physicsSystem.getCollisions(monster);
-			// if(list.size()!=0)
-			// { timeSinceLastShot = INTERVAL;
-			// return;
-			// }
-
-			// else add monster to world
-			this.gameObjects.add(monster);
-			this.monsterObject.add(monster);
+			TD_AlienAI alien = new TD_AlienAI(startSquare, initRoute, startPoint[0], startPoint[1], 10);
+			counterA.increment();
+			this.gameObjects.add(alien);
+			this.alienObjects.add(alien);
 		}
 
 	}
 
+	/**
+	 * Create new objects
+	 * 
+	 * @param double diffSeconds - time elapsed
+	 */
 	protected void createNewObjects(double diffSeconds) {
 		spawn(diffSeconds);
-		// createZombie(diffSeconds);
-
 		// delete HelpText after ... seconds
 		if (helpText != null) {
 			lifeHelpText -= diffSeconds;
@@ -262,11 +245,15 @@ class TD_World extends A_World {
 		}
 	}
 
+	/**
+	 * Removes old objects (aka unalived aliens or aliens that reached end
+	 * destination)
+	 */
 	protected void deleteOldObjects() {
 		ArrayList<TD_AlienAI> toBeRemoved = new ArrayList<TD_AlienAI>();
-		for (TD_AlienAI alien : monsterObject) {
+		for (TD_AlienAI alien : alienObjects) {
 			if (this.endSquare.isCloseCenter(alien.x, alien.y)) {
-				counterH.setNumber(counterH.getNumber()-1);
+				counterH.setNumber(counterH.getNumber() - 1);
 				if (counterH.getNumber() == 0) {
 					gameOver();
 				}
@@ -278,10 +265,14 @@ class TD_World extends A_World {
 
 		for (TD_AlienAI alien : toBeRemoved) {
 			this.gameObjects.remove(alien);
-			this.monsterObject.remove(alien);
+			this.alienObjects.remove(alien);
+			counterA.decrement();
 		}
 	}
 
+	/**
+	 * Gameover
+	 */
 	public void gameOver() {
 		while (true)
 			;
