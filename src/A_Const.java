@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 
 // (c) Thorsten Hasbargen
 

@@ -10,6 +10,7 @@ class TD_World extends A_World {
 	private TD_CounterHealth counterH; // health
 	private TD_CounterAlien counterA; // monsters
 	private TD_HelpText helpText; // helptext
+	private TD_CounterCredits counterC;
 
 	private ArrayList<TD_AlienAI> alienObjects = new ArrayList<TD_AlienAI>(); // stores monsters
 	private LinkedList<A_Square> initRoute;
@@ -43,14 +44,31 @@ class TD_World extends A_World {
 		startPoint = startSquare.getMiddle();
 		spawn(0);
 
-		counterA = new TD_CounterAlien(20, 80);
+		counterA = new TD_CounterAlien(20, 120);
 		counterH = new TD_CounterHealth(20, 40);
+		counterC = new TD_CounterCredits(20, 80);
 		helpText = new TD_HelpText(100, 400);
 
 		textObjects.add(counterA);
+		textObjects.add(counterC);
 		textObjects.add(counterH);
 		textObjects.add(helpText);
 
+	}
+
+	private A_Square findSquareAtPos(int x, int y) {
+		int i = 0;
+		int j = 0;
+		for (int ii = 0; ii < 25; ++ii) // && loop
+			for (int jj = 0; jj < 21; ++jj) // && loop
+				if (squareObjects[ii][jj].isWithin((double) x,
+						(double) y)) {
+					i = ii;
+					j = jj;
+				}
+		if (i != 25 && j != 21)
+			return squareObjects[i][j];
+		return null;
 	}
 
 	protected void processUserInput(A_UserInput userInput, double diffSeconds) {
@@ -58,19 +76,7 @@ class TD_World extends A_World {
 		// mouse button pressed
 		if (userInput.isMouseEvent) {
 			if (button == 1 && super.isBuilding) { // left click in building mode
-				A_Square sqr = null;
-				// find on which square the mouse click happend
-				int i = 0;
-				int j = 0;
-				for (int ii = 0; ii < 25; ++ii) // && loop
-					for (int jj = 0; jj < 21; ++jj) // && loop
-						if (squareObjects[ii][jj].isWithin((double) userInput.mousePressedX,
-								(double) userInput.mousePressedY)) {
-							i = ii;
-							j = jj;
-						}
-				if (i != 25 && j != 21)
-					sqr = squareObjects[i][j];
+				A_Square sqr = findSquareAtPos(userInput.mousePressedX, userInput.mousePressedY);
 				if (sqr != null && !sqr.getTaken()) { // if square is not null and square is not taken, prepare to build
 					sqr.take(); // mark square as taken
 					updateMatrix(); // update matrix with newly marked square
@@ -213,14 +219,13 @@ class TD_World extends A_World {
 	 * 
 	 * @param double diffSeconds - time elapsed
 	 */
-
 	protected void spawn(double diffSeconds) {
 		final double INTERVAL = A_Const.SPAWN_INTERVAL;
 
 		timeSinceLastShot += diffSeconds;
 		if (timeSinceLastShot > INTERVAL) {
 			timeSinceLastShot -= INTERVAL;
-			TD_AlienAI alien = new TD_AlienAI(startSquare, initRoute, startPoint[0], startPoint[1], 10);
+			TD_AlienAI alien = new TD_AlienAI(startSquare, initRoute, startPoint[0], startPoint[1], 10, 100);
 			counterA.increment();
 			this.gameObjects.add(alien);
 			this.alienObjects.add(alien);
@@ -259,8 +264,10 @@ class TD_World extends A_World {
 				}
 				toBeRemoved.add(alien);
 			}
-			if (!alien.isLiving)
+			if (!alien.isLiving) {
 				toBeRemoved.add(alien);
+				counterC.add(100);
+			}
 		}
 
 		for (TD_AlienAI alien : toBeRemoved) {

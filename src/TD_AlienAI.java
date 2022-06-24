@@ -9,7 +9,7 @@ class TD_AlienAI extends A_GameObject {
 	private A_Square current; // current square position
 	private boolean routeChanged = false; // if route changed
 	private int life; // life of a zombie
-
+	private int credits;
 	private static final B_Shape SHAPE = new B_Shape(15, new Color(160, 80, 40));
 
 	/**
@@ -20,7 +20,7 @@ class TD_AlienAI extends A_GameObject {
 	 * @param y Position Y
 	 * @param life Life of the alien
 	 */
-	public TD_AlienAI(A_Square spawn, LinkedList<A_Square> route, double x, double y, int life) {
+	public TD_AlienAI(A_Square spawn, LinkedList<A_Square> route, double x, double y, int life, int credits) {
 		super(x, y, 0, 40, SHAPE);
 		this.current = spawn;
 		this.isMoving = true;
@@ -29,6 +29,7 @@ class TD_AlienAI extends A_GameObject {
 			this.route.add(new A_Square(sqr));
 		}
 		this.dest = this.route.pollFirst(); // first destination is the first element of the route
+		this.credits = credits;
 	}
 
 	/**
@@ -81,6 +82,9 @@ class TD_AlienAI extends A_GameObject {
 		}
 	}
 
+	public int getCredits(){
+		return credits;
+	}
 	public A_Type type() {
 		return A_Type.ALIEN;
 	}
