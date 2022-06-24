@@ -7,8 +7,6 @@ public class TD_Avatar extends A_GameObject {
 	
 	public TD_Avatar(double x, double y) {
 		super(x, y, 0, 0, SHAPE);
-		//this.isMoving = false;
-
         counter = new TD_CounterMonsterHealth((int)x,(int)y);
 		
 	}
@@ -23,7 +21,7 @@ public class TD_Avatar extends A_GameObject {
 			A_GameObject obj = collisions.get(i);
 
 			// if Object is a tree, move back one step
-			if (obj.type() == A_Type.TURRET) {
+			if (obj.type() == A_Type.TURRET || obj.type() == A_Type.SLOWER) {
 				this.moveBack();
 			}
 		}

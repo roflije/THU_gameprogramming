@@ -12,8 +12,7 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 
 	// GraphicsSystem variables
 	//
-	private GraphicsConfiguration graphicsConf = GraphicsEnvironment.getLocalGraphicsEnvironment()
-			.getDefaultScreenDevice().getDefaultConfiguration();
+	private GraphicsConfiguration graphicsConf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
 	private BufferedImage imageBuffer;
 	private Graphics graphics;
 
@@ -54,71 +53,84 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 		B_Shape shape = (B_Shape) obj.shape;
 		A_Type type = obj.type();
 		switch (type) {
-			case PLAYER: {
-				int x = (int) (obj.x - shape.radius());
-				int y = (int) (obj.y - shape.radius());
-				int d = (int) (shape.radius() * 2);
-				graphics.setColor(shape.color);
-				graphics.fillOval(x, y, d, d);
-				graphics.setColor(Color.DARK_GRAY);
-				graphics.drawOval(x, y, d, d);
-				break;
-			}
+		case PLAYER: {
+			int x = (int) (obj.x - shape.radius());
+			int y = (int) (obj.y - shape.radius());
+			int d = (int) (shape.radius() * 2);
+			graphics.setColor(shape.color);
+			graphics.fillOval(x, y, d, d);
+			graphics.setColor(Color.DARK_GRAY);
+			graphics.drawOval(x, y, d, d);
+			break;
+		}
 
-			case ALIEN_SMALL: {
-				int x = (int) (obj.x - shape.radius() / 2);
-				int y = (int) (obj.y - shape.radius() / 2);
-				int d = (int) (shape.radius() * 2);
-				graphics.setColor(shape.color);
-				graphics.fillOval(x, y, d / 2, d / 2);
-				graphics.setColor(Color.DARK_GRAY);
-				graphics.drawOval(x, y, d / 2, d / 2);
-				break;
-			}
-			case ALIEN_MEDIUM: {
-				int x = (int) (obj.x - shape.radius());
-				int y = (int) (obj.y - shape.radius());
-				int d = (int) (shape.radius() * 2);
-				graphics.setColor(shape.color);
-				graphics.fillOval(x, y, d, d);
-				graphics.setColor(Color.DARK_GRAY);
-				graphics.drawOval(x, y, d, d);
-				break;
-			}
-			case ALIEN_BIG: {
-				int x = (int) (obj.x - shape.radius() * 2);
-				int y = (int) (obj.y - shape.radius() * 2);
-				int d = (int) (shape.radius() * 2);
-				graphics.setColor(shape.color);
-				graphics.fillOval(x, y, d * 2, d * 2);
-				graphics.setColor(Color.DARK_GRAY);
-				graphics.drawOval(x, y, d * 2, d * 2);
-				break;
-			}
-			case TURRET: {
-				int x1 = (int) (obj.x - shape.radius());
-				int y1 = (int) (obj.y + shape.radius());
-				int x2 = (int) obj.x;
-				int y2 = (int) (obj.y - shape.radius());
-				int x3 = (int) (obj.x + shape.radius());
-				int y3 = (int) (obj.y + shape.radius());
-				Polygon p = new Polygon(new int[] { x1, x2, x3 }, new int[] { y1, y2, y3 }, 3);
-				graphics.setColor(shape.color);
-				graphics.drawPolygon(p);
-				graphics.fillPolygon(p);
-				break;
-			}
-			case BULLET:
-				int x = (int) (obj.x - shape.radius() / 2);
-				int y = (int) (obj.y - shape.radius() / 2);
-				int d = (int) (shape.radius() * 2);
-				graphics.setColor(shape.color);
-				graphics.fillOval(x, y, d / 2, d / 2);
-				graphics.setColor(Color.DARK_GRAY);
-				graphics.drawOval(x, y, d / 2, d / 2);
-				break;
-			default:
-				break;
+		case ALIEN_SMALL: {
+			int x = (int) (obj.x - shape.radius() / 2);
+			int y = (int) (obj.y - shape.radius() / 2);
+			int d = (int) (shape.radius() * 2);
+			graphics.setColor(shape.color);
+			graphics.fillOval(x, y, d / 2, d / 2);
+			graphics.setColor(Color.DARK_GRAY);
+			graphics.drawOval(x, y, d / 2, d / 2);
+			break;
+		}
+		case ALIEN_MEDIUM: {
+			int x = (int) (obj.x - shape.radius());
+			int y = (int) (obj.y - shape.radius());
+			int d = (int) (shape.radius() * 2);
+			graphics.setColor(shape.color);
+			graphics.fillOval(x, y, d, d);
+			graphics.setColor(Color.DARK_GRAY);
+			graphics.drawOval(x, y, d, d);
+			break;
+		}
+		case ALIEN_BIG: {
+			int x = (int) (obj.x - shape.radius() * 2);
+			int y = (int) (obj.y - shape.radius() * 2);
+			int d = (int) (shape.radius() * 2);
+			graphics.setColor(shape.color);
+			graphics.fillOval(x, y, d * 2, d * 2);
+			graphics.setColor(Color.DARK_GRAY);
+			graphics.drawOval(x, y, d * 2, d * 2);
+			break;
+		}
+		case TURRET: {
+			int x1 = (int) (obj.x - shape.radius());
+			int y1 = (int) (obj.y + shape.radius());
+			int x2 = (int) obj.x;
+			int y2 = (int) (obj.y - shape.radius());
+			int x3 = (int) (obj.x + shape.radius());
+			int y3 = (int) (obj.y + shape.radius());
+			Polygon p = new Polygon(new int[] { x1, x2, x3 }, new int[] { y1, y2, y3 }, 3);
+			graphics.setColor(shape.color);
+			graphics.drawPolygon(p);
+			graphics.fillPolygon(p);
+			break;
+		}
+		case SLOWER: {
+			int x1 = (int) (obj.x - shape.radius());
+			int y1 = (int) (obj.y + shape.radius());
+			int x2 = (int) obj.x;
+			int y2 = (int) (obj.y - shape.radius());
+			int x3 = (int) (obj.x + shape.radius());
+			int y3 = (int) (obj.y + shape.radius());
+			Polygon p = new Polygon(new int[] { x1, x2, x3 }, new int[] { y1, y2, y3 }, 3);
+			graphics.setColor(shape.color);
+			graphics.drawPolygon(p);
+			graphics.fillPolygon(p);
+			break;
+		}
+		case BULLET:
+			int x = (int) (obj.x - shape.radius() / 2);
+			int y = (int) (obj.y - shape.radius() / 2);
+			int d = (int) (shape.radius() * 2);
+			graphics.setColor(shape.color);
+			graphics.fillOval(x, y, d / 2, d / 2);
+			graphics.setColor(Color.DARK_GRAY);
+			graphics.drawOval(x, y, d / 2, d / 2);
+			break;
+		default:
+			break;
 
 		}
 

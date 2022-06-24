@@ -19,7 +19,6 @@ class TD_World extends A_World {
 	private A_Square startSquare;
 	private A_Square endSquare;
 	private double lifeHelpText = 10.0;
-	private A_Type chosenBuilding = A_Type.TURRET;
 	int[][] startend = { { 0, 10 }, { 24, 10 } };
 
 	protected void init() {
@@ -73,14 +72,87 @@ class TD_World extends A_World {
 	}
 
 	protected void processUserInput(A_UserInput userInput, double diffSeconds) {
+		timeSinceLastShot += diffSeconds;
+
+		//
+		// Keyboard events
+		//
+		if (userInput.isKeyPressEvent) {
+			if (userInput.keyPressed == KeyEvent.VK_TAB) {
+				toggleBuilding();
+			}
+		}
+		if (!isBuilding) {
+			if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
+				if (userInput.keys.contains(KeyEvent.VK_W) && userInput.keys.size() == 1) {
+					userInput.keys.toString();
+					avatar.speed = A_Const.AVATAR_SPEED;
+					avatar.alfa = Math.PI * -0.5;
+				}
+			}
+			if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
+				if (userInput.keys.contains(KeyEvent.VK_S) && userInput.keys.size() == 1) {
+					avatar.speed = A_Const.AVATAR_SPEED;
+					avatar.alfa = -Math.PI * 1.5;
+				}
+			}
+			if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
+				if (userInput.keys.contains(KeyEvent.VK_A) && userInput.keys.size() == 1) {
+					if (avatar.alfa == Math.PI * 2)
+						avatar.speed = A_Const.AVATAR_SPEED;
+					avatar.alfa = -Math.PI;
+				}
+			}
+			if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
+				if (userInput.keys.contains(KeyEvent.VK_D) && userInput.keys.size() == 1) {
+					avatar.speed = A_Const.AVATAR_SPEED;
+					avatar.alfa = Math.PI * 2;
+				}
+			}
+			if (userInput.isKeyPressEvent) {
+				if (userInput.keys.contains(KeyEvent.VK_W) && userInput.keys.contains(KeyEvent.VK_A)) {
+					avatar.speed = A_Const.AVATAR_SPEED;
+					avatar.alfa = Math.PI * -0.75;
+				}
+			}
+			if (userInput.isKeyPressEvent) {
+				if (userInput.keys.contains(KeyEvent.VK_W) && userInput.keys.contains(KeyEvent.VK_D)) {
+					avatar.speed = A_Const.AVATAR_SPEED;
+					avatar.alfa = Math.PI * -0.25;
+				}
+			}
+			if (userInput.isKeyPressEvent) {
+				if (userInput.keys.contains(KeyEvent.VK_A) && userInput.keys.contains(KeyEvent.VK_S)) {
+					avatar.speed = A_Const.AVATAR_SPEED;
+					avatar.alfa = Math.PI * -1.25;
+				}
+			}
+			if (userInput.isKeyPressEvent) {
+				if (userInput.keys.contains(KeyEvent.VK_S) && userInput.keys.contains(KeyEvent.VK_D)) {
+					avatar.speed = A_Const.AVATAR_SPEED;
+					avatar.alfa = Math.PI * 0.25;
+				}
+
+			}
+
+			if (userInput.isKeyReleaseEvent) {
+				if (userInput.keys.size() == 0) {
+					avatar.speed = 0;
+				}
+			}
+		}
+		
 		int button = userInput.mouseButton;
 		// mouse button pressed
 		if (userInput.isMouseEvent) {
 			if (button == 1 && !super.isBuilding) {
-				TD_Shot shot = new TD_Shot(avatar.x, avatar.y, userInput.mouseMovedX, userInput.mouseMovedY);
-				gameObjects.add(shot);
+				if (timeSinceLastShot > A_Const.AVATAR_SHOOT_DELAY) {
+					TD_Shot shot = new TD_Shot(avatar.x, avatar.y, userInput.mouseMovedX, userInput.mouseMovedY);
+					gameObjects.add(shot);
+					timeSinceLastShot = 0;
+				}
 			}
-			if (button == 1 && super.isBuilding) { // left click in building mode
+			if ((button == 1 || button == 3) && super.isBuilding) { // left click in building mode
 				A_Square sqr = findSquareAtPos(userInput.mousePressedX, userInput.mousePressedY);
 				if (sqr != null && !sqr.getTaken()) { // if square is not null and square is not taken, prepare to build
 					sqr.take(); // mark square as taken
@@ -88,7 +160,7 @@ class TD_World extends A_World {
 					LinkedList<Cell> cells = BFS.shortestPath(startend[0], startend[1]); // calculate if new path possible
 					if (cells == null) { // if no path (cannot build), free the square
 						sqr.notTake();
-					} else if (this.chosenBuilding == A_Type.TURRET ? this.counterC.get() - A_Const.TURRET_COST < 0 : this.counterC.get() - A_Const.SLOWER_COST < 0) {
+					} else if (button == 1 ? this.counterC.get() - A_Const.TURRET_COST < 0 : this.counterC.get() - A_Const.SLOWER_COST < 0) {
 						sqr.notTake();
 					} else {
 						this.initRoute = A_Square.getPathFromCellList(cells); // update initial route for monsters with new route
@@ -101,12 +173,14 @@ class TD_World extends A_World {
 							sqr.notTake();
 						} else { // else spawn tower
 							double[] middle = sqr.getMiddle();
-							switch (this.chosenBuilding) {
-							case TURRET:
+							switch (button) {
+							case 1:
 								gameObjects.add(new TD_Turret(middle[0], middle[1], 20));
 								this.counterC.subtract(A_Const.TURRET_COST);
 								break;
-							case SLOWER:
+							case 3:
+								gameObjects.add(new TD_Slower(middle[0], middle[1], 20));
+								this.counterC.subtract(A_Const.SLOWER_COST);
 								break;
 							default:
 								break;
@@ -122,63 +196,10 @@ class TD_World extends A_World {
 		// Mouse still pressed?
 		//
 		if (userInput.isMousePressed && button == 1 && !super.isBuilding) {
-			timeSinceLastShot += diffSeconds;
-			if (timeSinceLastShot > 0.2) {
-				timeSinceLastShot = 0;
+			if (timeSinceLastShot > A_Const.AVATAR_SHOOT_DELAY) {
 				TD_Shot shot = new TD_Shot(avatar.x, avatar.y, userInput.mouseMovedX, userInput.mouseMovedY);
 				gameObjects.add(shot);
-			}
-		}
-
-		//
-		// Keyboard events
-		//
-		if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
-			if (userInput.keys.contains(KeyEvent.VK_W) && userInput.keys.size() == 1) {
-				userInput.keys.toString();
-				avatar.speed = A_Const.AVATAR_SPEED;
-				avatar.alfa = Math.PI * -0.5;
-			}
-			if (userInput.keys.contains(KeyEvent.VK_S) && userInput.keys.size() == 1) {
-				avatar.speed = A_Const.AVATAR_SPEED;
-				avatar.alfa = -Math.PI * 1.5;
-			}
-			if (userInput.keys.contains(KeyEvent.VK_A) && userInput.keys.size() == 1) {
-				if (avatar.alfa == Math.PI * 2)
-					avatar.speed = A_Const.AVATAR_SPEED;
-				avatar.alfa = -Math.PI;
-			}
-
-			if (userInput.keys.contains(KeyEvent.VK_D) && userInput.keys.size() == 1) {
-				avatar.speed = A_Const.AVATAR_SPEED;
-				avatar.alfa = Math.PI * 2;
-			}
-		}
-
-		if (userInput.isKeyPressEvent) {
-			if (userInput.keyPressed == KeyEvent.VK_TAB) {
-				toggleBuilding();
-			}
-			if (userInput.keys.contains(KeyEvent.VK_W) && userInput.keys.contains(KeyEvent.VK_A)) {
-				avatar.speed = A_Const.AVATAR_SPEED;
-				avatar.alfa = Math.PI * -0.75;
-			}
-			if (userInput.keys.contains(KeyEvent.VK_W) && userInput.keys.contains(KeyEvent.VK_D)) {
-				avatar.speed = A_Const.AVATAR_SPEED;
-				avatar.alfa = Math.PI * -0.25;
-			}
-			if (userInput.keys.contains(KeyEvent.VK_A) && userInput.keys.contains(KeyEvent.VK_S)) {
-				avatar.speed = A_Const.AVATAR_SPEED;
-				avatar.alfa = Math.PI * -1.25;
-			}
-			if (userInput.keys.contains(KeyEvent.VK_S) && userInput.keys.contains(KeyEvent.VK_D)) {
-				avatar.speed = A_Const.AVATAR_SPEED;
-				avatar.alfa = Math.PI * 0.25;
-			}
-		}
-		if (userInput.isKeyReleaseEvent) {
-			if (userInput.keys.size() == 0) {
-				avatar.speed = 0;
+				timeSinceLastShot = 0;
 			}
 		}
 	}

@@ -29,12 +29,12 @@ class TD_AlienAI extends A_GameObject {
 			case ALIEN_SMALL:
 				this.life = 10;
 				this.credits = 50;
-				this.speed = 100;
+				this.speed = 150;
 				break;
 			case ALIEN_MEDIUM:
 				this.life = 30;
 				this.credits = 100;
-				this.speed = 50;
+				this.speed = 75;
 				break;
 			case ALIEN_BIG:
 				this.life = 60;
@@ -110,4 +110,11 @@ class TD_AlienAI extends A_GameObject {
 		return this.type;
 	}
 
+	public void fast(){
+		this.speed *= 2;
+	}
+
+	public void slow() {
+		this.speed /= 2;
+	}
 }
