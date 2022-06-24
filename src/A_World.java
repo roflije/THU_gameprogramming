@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 abstract class A_World {
 	public static A_Square[][] squareObjects = new A_Square[25][21];
+	public static A_GameObjectList gameObjects = new A_GameObjectList();
 
 	private A_GraphicSystem graphicSystem;
 	private A_PhysicsSystem physicsSystem;
@@ -11,7 +12,6 @@ abstract class A_World {
 	private static final int FRAME_MINIMUM_MILLIS = 10;
 
 	// all objects in the game, including the Avatar
-	protected A_GameObjectList gameObjects = new A_GameObjectList();
 	protected A_GameObject avatar;
 	protected ArrayList<A_TextObject> textObjects = new ArrayList<A_TextObject>();
 

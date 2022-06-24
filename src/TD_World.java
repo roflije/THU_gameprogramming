@@ -5,6 +5,7 @@ import java.util.Random;
 
 class TD_World extends A_World {
 	public static int[][] matrix = new int[25][21]; // 0-1 matrix for bfs
+	public static ArrayList<TD_AlienAI> alienObjects = new ArrayList<TD_AlienAI>(); // stores monsters
 
 	private double timeSinceLastShot = 0;
 
@@ -13,7 +14,6 @@ class TD_World extends A_World {
 	private TD_HelpText helpText; // helptext
 	private TD_CounterCredits counterC;
 
-	private ArrayList<TD_AlienAI> alienObjects = new ArrayList<TD_AlienAI>(); // stores monsters
 	private LinkedList<A_Square> initRoute;
 	private double[] startPoint;
 	private A_Square startSquare;
@@ -113,15 +113,12 @@ class TD_World extends A_World {
 		//
 		// Mouse still pressed?
 		//
-		if (userInput.isMousePressed && button == 2) {
-			// only 1 shot every ... seconds:
-			System.out.println("shoot");
+		if (userInput.isMousePressed && button == 1) {
 			timeSinceLastShot += diffSeconds;
 			if (timeSinceLastShot > 0.2) {
 				timeSinceLastShot = 0;
-
 				TD_Shot shot = new TD_Shot(avatar.x, avatar.y, userInput.mouseMovedX, userInput.mouseMovedY);
-				this.gameObjects.add(shot);
+				gameObjects.add(shot);
 			}
 		}
 
@@ -236,8 +233,8 @@ class TD_World extends A_World {
 			TD_AlienAI alien = new TD_AlienAI(A_Type.values()[n + 3], startSquare, initRoute, startPoint[0],
 					startPoint[1]);
 			counterA.increment();
-			this.gameObjects.add(alien);
-			this.alienObjects.add(alien);
+			gameObjects.add(alien);
+			alienObjects.add(alien);
 		}
 	}
 
@@ -281,8 +278,8 @@ class TD_World extends A_World {
 		}
 
 		for (TD_AlienAI alien : toBeRemoved) {
-			this.gameObjects.remove(alien);
-			this.alienObjects.remove(alien);
+			gameObjects.remove(alien);
+			alienObjects.remove(alien);
 			counterA.decrement();
 		}
 	}

@@ -12,4 +12,5 @@ final class A_Const
   static final double SHOOT_DELAY = 1.0;
   static final double CLOSE_DISTANCE = 3.0;
   static final int HEALTH = 5;
+  static final int TURRET_RANGE = 80;
 }

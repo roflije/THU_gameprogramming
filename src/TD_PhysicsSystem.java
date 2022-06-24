@@ -13,9 +13,9 @@ class TD_PhysicsSystem extends A_PhysicsSystem {
 	public A_GameObjectList getCollisions(A_GameObject object) {
 		A_GameObjectList result = new A_GameObjectList();
 
-		int len = world.gameObjects.size();
+		int len = TD_World.gameObjects.size();
 		for (int i = 0; i < len; i++) {
-			A_GameObject obj2 = world.gameObjects.get(i);
+			A_GameObject obj2 = TD_World.gameObjects.get(i);
 
 			// an object doesn't collide with itself
 			if (obj2 == object)
