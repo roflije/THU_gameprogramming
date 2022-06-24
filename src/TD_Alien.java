@@ -33,6 +33,6 @@ class TD_Alien extends A_GameObject {
 	}
 
 	public A_Type type() {
-		return A_Type.ALIEN;
+		return A_Type.ALIEN_SMALL;
 	}
 }

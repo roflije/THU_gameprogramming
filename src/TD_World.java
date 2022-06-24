@@ -1,6 +1,7 @@
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 
 class TD_World extends A_World {
 	public static int[][] matrix = new int[25][21]; // 0-1 matrix for bfs
@@ -75,6 +76,10 @@ class TD_World extends A_World {
 		int button = userInput.mouseButton;
 		// mouse button pressed
 		if (userInput.isMouseEvent) {
+			if (button == 1 && !super.isBuilding) {
+				TD_Shot shot = new TD_Shot(avatar.x, avatar.y, userInput.mouseMovedX, userInput.mouseMovedY);
+				gameObjects.add(shot);
+			}
 			if (button == 1 && super.isBuilding) { // left click in building mode
 				A_Square sqr = findSquareAtPos(userInput.mousePressedX, userInput.mousePressedY);
 				if (sqr != null && !sqr.getTaken()) { // if square is not null and square is not taken, prepare to build
@@ -108,8 +113,9 @@ class TD_World extends A_World {
 		//
 		// Mouse still pressed?
 		//
-		if (userInput.isMousePressed && button == 3) {
+		if (userInput.isMousePressed && button == 2) {
 			// only 1 shot every ... seconds:
+			System.out.println("shoot");
 			timeSinceLastShot += diffSeconds;
 			if (timeSinceLastShot > 0.2) {
 				timeSinceLastShot = 0;
@@ -225,12 +231,14 @@ class TD_World extends A_World {
 		timeSinceLastShot += diffSeconds;
 		if (timeSinceLastShot > INTERVAL) {
 			timeSinceLastShot -= INTERVAL;
-			TD_AlienAI alien = new TD_AlienAI(startSquare, initRoute, startPoint[0], startPoint[1], 10, 100);
+			Random rand = new Random();
+			int n = rand.nextInt(3);
+			TD_AlienAI alien = new TD_AlienAI(A_Type.values()[n + 3], startSquare, initRoute, startPoint[0],
+					startPoint[1]);
 			counterA.increment();
 			this.gameObjects.add(alien);
 			this.alienObjects.add(alien);
 		}
-
 	}
 
 	/**
@@ -239,13 +247,15 @@ class TD_World extends A_World {
 	 * @param double diffSeconds - time elapsed
 	 */
 	protected void createNewObjects(double diffSeconds) {
-		spawn(diffSeconds);
-		// delete HelpText after ... seconds
-		if (helpText != null) {
-			lifeHelpText -= diffSeconds;
-			if (lifeHelpText < 0) {
-				textObjects.remove(helpText);
-				helpText = null;
+		if (!isBuilding) {
+			spawn(diffSeconds);
+			// delete HelpText after ... seconds
+			if (helpText != null) {
+				lifeHelpText -= diffSeconds;
+				if (lifeHelpText < 0) {
+					textObjects.remove(helpText);
+					helpText = null;
+				}
 			}
 		}
 	}
@@ -266,7 +276,7 @@ class TD_World extends A_World {
 			}
 			if (!alien.isLiving) {
 				toBeRemoved.add(alien);
-				counterC.add(100);
+				counterC.add(alien.getCredits());
 			}
 		}
 

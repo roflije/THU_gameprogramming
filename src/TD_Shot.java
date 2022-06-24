@@ -1,9 +1,9 @@
 import java.awt.Color;
 
 class TD_Shot extends A_GameObject {
-	private static final B_Shape SHAPE = new B_Shape(4, Color.yellow);
+	private static final B_Shape SHAPE = new B_Shape(8, Color.yellow);
 
-	private double lifeTime = 1.2;
+	private double lifeTime = 1000;
 
 	public TD_Shot(double x, double y, double xDest, double yDest) {
 		super(x, y, Math.atan2(yDest - y, xDest - x), 500, SHAPE);
@@ -31,16 +31,14 @@ class TD_Shot extends A_GameObject {
 			A_Type type = obj.type();
 
 			// tree: shot is deleted
-			if (type == A_Type.TURRET) {
+			if (type == A_Type.TURRET || type == A_Type.SLOWER) {
 				this.isLiving = false;
 			}
 			// Zombie: inform Zombie it is hit
-			else if (type == A_Type.ALIEN && obj.isLiving) {
-				/*
-				TD_AlienAI zombie = (TD_AlienAI) obj;
-				zombie.hasBeenShot();
+			else if ( (type == A_Type.ALIEN_SMALL || type== A_Type.ALIEN_MEDIUM || type== A_Type.ALIEN_BIG) && obj.isLiving) {
+				TD_AlienAI alien = (TD_AlienAI) obj;
+				alien.hasBeenShot();
 				this.isLiving = false;
-				*/
 			}
 		}
 

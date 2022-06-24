@@ -2,6 +2,9 @@
 public enum A_Type {
 	PLAYER,
 	TURRET,
-	ALIEN,
+	SLOWER,
+	ALIEN_BIG,
+	ALIEN_MEDIUM,
+	ALIEN_SMALL,
 	BULLET
 }
