@@ -15,7 +15,7 @@ class TD_Turret extends A_GameObject {
 		timeSinceLastShot += diffSeconds;
 		if (timeSinceLastShot > 1) {
 			target = findNearestMonster();
-			if(target != null){
+			if (target != null) {
 				TD_Shot shot = new TD_Shot(super.x, super.y, target);
 				TD_World.gameObjects.add(shot);
 				timeSinceLastShot = 0;
@@ -28,9 +28,7 @@ class TD_Turret extends A_GameObject {
 		TD_AlienAI result = null;
 		double distance = Double.MAX_VALUE;
 		for (TD_AlienAI alien : TD_World.alienObjects) {
-			if (this.x - A_Const.TURRET_RANGE < alien.x && alien.x < this.x + A_Const.TURRET_RANGE
-					&& this.y - A_Const.TURRET_RANGE < alien.y && alien.y < this.y + A_Const.TURRET_RANGE
-					&& Math.abs(calculateDistance(this.x, this.y, alien.x, alien.y)) < distance) {
+			if (this.x - A_Const.TURRET_RANGE < alien.x && alien.x < this.x + A_Const.TURRET_RANGE && this.y - A_Const.TURRET_RANGE < alien.y && alien.y < this.y + A_Const.TURRET_RANGE && Math.abs(calculateDistance(this.x, this.y, alien.x, alien.y)) < distance) {
 				result = alien;
 				distance = Math.abs(calculateDistance(this.x, this.y, alien.x, alien.y));
 			}

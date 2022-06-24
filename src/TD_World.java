@@ -19,6 +19,7 @@ class TD_World extends A_World {
 	private A_Square startSquare;
 	private A_Square endSquare;
 	private double lifeHelpText = 10.0;
+	private A_Type chosenBuilding = A_Type.TURRET;
 	int[][] startend = { { 0, 10 }, { 24, 10 } };
 
 	protected void init() {
@@ -62,8 +63,7 @@ class TD_World extends A_World {
 		int j = 0;
 		for (int ii = 0; ii < 25; ++ii) // && loop
 			for (int jj = 0; jj < 21; ++jj) // && loop
-				if (squareObjects[ii][jj].isWithin((double) x,
-						(double) y)) {
+				if (squareObjects[ii][jj].isWithin((double) x, (double) y)) {
 					i = ii;
 					j = jj;
 				}
@@ -85,16 +85,15 @@ class TD_World extends A_World {
 				if (sqr != null && !sqr.getTaken()) { // if square is not null and square is not taken, prepare to build
 					sqr.take(); // mark square as taken
 					updateMatrix(); // update matrix with newly marked square
-					LinkedList<Cell> cells = BFS.shortestPath(startend[0], startend[1]); // calculate if new path
-																							// possible
+					LinkedList<Cell> cells = BFS.shortestPath(startend[0], startend[1]); // calculate if new path possible
 					if (cells == null) { // if no path (cannot build), free the square
 						sqr.notTake();
+					} else if (this.chosenBuilding == A_Type.TURRET ? this.counterC.get() - A_Const.TURRET_COST < 0 : this.counterC.get() - A_Const.SLOWER_COST < 0) {
+						sqr.notTake();
 					} else {
-						this.initRoute = A_Square.getPathFromCellList(cells); // update initial route for monsters with
-																				// new route
+						this.initRoute = A_Square.getPathFromCellList(cells); // update initial route for monsters with new route
 						boolean cannotCreate = false;
-						for (TD_AlienAI a : alienObjects) { // check if can create path for every alien that is on the
-															// map already
+						for (TD_AlienAI a : alienObjects) { // check if can create path for every alien that is on the map already
 							if (!a.updatePath()) // sqr.isWithin(a.x, a.y)
 								cannotCreate = true; // if not, set flag
 						}
@@ -102,7 +101,20 @@ class TD_World extends A_World {
 							sqr.notTake();
 						} else { // else spawn tower
 							double[] middle = sqr.getMiddle();
-							gameObjects.add(new TD_Turret(middle[0], middle[1], 20));
+							switch (this.chosenBuilding) {
+							case TURRET:
+								if (this.counterC.get() - A_Const.TURRET_COST >= 0) {
+									gameObjects.add(new TD_Turret(middle[0], middle[1], 20));
+									this.counterC.subtract(A_Const.TURRET_COST);
+								} else {
+									sqr.notTake();
+								}
+								break;
+							case SLOWER:
+								break;
+							default:
+								break;
+							}
 						}
 
 					}
@@ -113,7 +125,7 @@ class TD_World extends A_World {
 		//
 		// Mouse still pressed?
 		//
-		if (userInput.isMousePressed && button == 1) {
+		if (userInput.isMousePressed && button == 1 && !super.isBuilding) {
 			timeSinceLastShot += diffSeconds;
 			if (timeSinceLastShot > 0.2) {
 				timeSinceLastShot = 0;
@@ -125,79 +137,52 @@ class TD_World extends A_World {
 		//
 		// Keyboard events
 		//
-		if (userInput.isKeyPressEvent) {
-			if (userInput.keyPressed == KeyEvent.VK_TAB) {
-				toggleBuilding();
-
-			}
-		}
-
 		if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
 			if (userInput.keys.contains(KeyEvent.VK_W) && userInput.keys.size() == 1) {
 				userInput.keys.toString();
-				avatar.speed = 50;
+				avatar.speed = A_Const.AVATAR_SPEED;
 				avatar.alfa = Math.PI * -0.5;
 			}
-		}
-
-		if (userInput.isKeyReleaseEvent) {
-			if (userInput.keys.size() == 0) {
-				avatar.speed = 0;
-			}
-		}
-
-		if (userInput.isKeyPressEvent) {
-			if (userInput.keys.contains(KeyEvent.VK_W) &&
-					userInput.keys.contains(KeyEvent.VK_A)) {
-				avatar.speed = 50;
-				avatar.alfa = Math.PI * -0.75;
-			}
-		}
-
-		if (userInput.isKeyPressEvent) {
-			if (userInput.keys.contains(KeyEvent.VK_W) &&
-					userInput.keys.contains(KeyEvent.VK_D)) {
-
-				avatar.speed = 50;
-				avatar.alfa = Math.PI * -0.25;
-			}
-		}
-
-		if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
-			if (userInput.keys.contains(KeyEvent.VK_A) && userInput.keys.size() == 1) {
-				if (avatar.alfa == Math.PI * 2)
-					avatar.speed = 50;
-				avatar.alfa = -Math.PI;
-			}
-		}
-
-		if (userInput.isKeyPressEvent) {
-			if (userInput.keys.contains(KeyEvent.VK_A) &&
-					userInput.keys.contains(KeyEvent.VK_S)) {
-				avatar.speed = 50;
-				avatar.alfa = Math.PI * -1.25;
-			}
-		}
-
-		if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
 			if (userInput.keys.contains(KeyEvent.VK_S) && userInput.keys.size() == 1) {
-				avatar.speed = 50;
+				avatar.speed = A_Const.AVATAR_SPEED;
 				avatar.alfa = -Math.PI * 1.5;
 			}
+			if (userInput.keys.contains(KeyEvent.VK_A) && userInput.keys.size() == 1) {
+				if (avatar.alfa == Math.PI * 2)
+					avatar.speed = A_Const.AVATAR_SPEED;
+				avatar.alfa = -Math.PI;
+			}
+
+			if (userInput.keys.contains(KeyEvent.VK_D) && userInput.keys.size() == 1) {
+				avatar.speed = A_Const.AVATAR_SPEED;
+				avatar.alfa = Math.PI * 2;
+			}
 		}
 
 		if (userInput.isKeyPressEvent) {
-			if (userInput.keys.contains(KeyEvent.VK_S) &&
-					userInput.keys.contains(KeyEvent.VK_D)) {
-				avatar.speed = 50;
+			if (userInput.keyPressed == KeyEvent.VK_TAB) {
+				toggleBuilding();
+			}
+			if (userInput.keys.contains(KeyEvent.VK_W) && userInput.keys.contains(KeyEvent.VK_A)) {
+				avatar.speed = A_Const.AVATAR_SPEED;
+				avatar.alfa = Math.PI * -0.75;
+			}
+			if (userInput.keys.contains(KeyEvent.VK_W) && userInput.keys.contains(KeyEvent.VK_D)) {
+				avatar.speed = A_Const.AVATAR_SPEED;
+				avatar.alfa = Math.PI * -0.25;
+			}
+			if (userInput.keys.contains(KeyEvent.VK_A) && userInput.keys.contains(KeyEvent.VK_S)) {
+				avatar.speed = A_Const.AVATAR_SPEED;
+				avatar.alfa = Math.PI * -1.25;
+			}
+			if (userInput.keys.contains(KeyEvent.VK_S) && userInput.keys.contains(KeyEvent.VK_D)) {
+				avatar.speed = A_Const.AVATAR_SPEED;
 				avatar.alfa = Math.PI * 0.25;
 			}
 		}
-
-		if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
-			if (userInput.keys.contains(KeyEvent.VK_D) && userInput.keys.size() == 1) {
-				avatar.speed = 50;
-				avatar.alfa = Math.PI * 2;
+		if (userInput.isKeyReleaseEvent) {
+			if (userInput.keys.size() == 0) {
+				avatar.speed = 0;
 			}
 		}
 	}
@@ -230,8 +215,7 @@ class TD_World extends A_World {
 			timeSinceLastShot -= INTERVAL;
 			Random rand = new Random();
 			int n = rand.nextInt(3);
-			TD_AlienAI alien = new TD_AlienAI(A_Type.values()[n + 3], startSquare, initRoute, startPoint[0],
-					startPoint[1]);
+			TD_AlienAI alien = new TD_AlienAI(A_Type.values()[n + 3], startSquare, initRoute, startPoint[0], startPoint[1]);
 			counterA.increment();
 			gameObjects.add(alien);
 			alienObjects.add(alien);
@@ -258,8 +242,7 @@ class TD_World extends A_World {
 	}
 
 	/**
-	 * Removes old objects (aka unalived aliens or aliens that reached end
-	 * destination)
+	 * Removes old objects (aka unalived aliens or aliens that reached end destination)
 	 */
 	protected void deleteOldObjects() {
 		ArrayList<TD_AlienAI> toBeRemoved = new ArrayList<TD_AlienAI>();

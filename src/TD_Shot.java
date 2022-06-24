@@ -17,14 +17,15 @@ class TD_Shot extends A_GameObject {
 		this.isMoving = true;
 	}
 
-	public TD_Shot(double x, double y, TD_AlienAI target){
-		super(x,y, Math.atan2(target.y - y, target.x - x),500, SHAPE);
+	public TD_Shot(double x, double y, TD_AlienAI target) {
+		super(x, y, Math.atan2(target.y - y, target.x - x), 500, SHAPE);
 		this.isMoving = true;
 		this.target = target;
 	}
+
 	public void move(double diffSeconds) {
-		if(target != null){	
-			if(target.isLiving == false){
+		if (target != null) {
+			if (target.isLiving == false) {
 				this.isLiving = false;
 			}
 			this.setDestination(target);
@@ -43,10 +44,10 @@ class TD_Shot extends A_GameObject {
 
 			// tree: shot is deleted
 			if (type == A_Type.TURRET || type == A_Type.SLOWER) {
-				//this.isLiving = false;
+				// this.isLiving = false;
 			}
 			// Zombie: inform Zombie it is hit
-			else if ( (type == A_Type.ALIEN_SMALL || type== A_Type.ALIEN_MEDIUM || type== A_Type.ALIEN_BIG) && obj.isLiving) {
+			else if ((type == A_Type.ALIEN_SMALL || type == A_Type.ALIEN_MEDIUM || type == A_Type.ALIEN_BIG) && obj.isLiving) {
 				TD_AlienAI alien = (TD_AlienAI) obj;
 				alien.hasBeenShot();
 				this.isLiving = false;
