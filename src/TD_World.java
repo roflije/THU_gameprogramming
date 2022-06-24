@@ -103,12 +103,8 @@ class TD_World extends A_World {
 							double[] middle = sqr.getMiddle();
 							switch (this.chosenBuilding) {
 							case TURRET:
-								if (this.counterC.get() - A_Const.TURRET_COST >= 0) {
-									gameObjects.add(new TD_Turret(middle[0], middle[1], 20));
-									this.counterC.subtract(A_Const.TURRET_COST);
-								} else {
-									sqr.notTake();
-								}
+								gameObjects.add(new TD_Turret(middle[0], middle[1], 20));
+								this.counterC.subtract(A_Const.TURRET_COST);
 								break;
 							case SLOWER:
 								break;
