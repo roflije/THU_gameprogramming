@@ -3,16 +3,23 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
+import java.util.Iterator;
+
 class TD_World extends A_World {
 	public static int[][] matrix = new int[25][21]; // 0-1 matrix for bfs
 	public static ArrayList<TD_AlienAI> alienObjects = new ArrayList<TD_AlienAI>(); // stores monsters
+	public static ArrayList<TD_Slower> slowerObjects = new ArrayList<TD_Slower>();
+	public static ArrayList<TD_Turret> turretObjects = new ArrayList<TD_Turret>();
 
 	private double timeSinceLastShot = 0;
+	private double timeSinceLastSpawn = 0;
 
 	private TD_CounterHealth counterH; // health
 	private TD_CounterAlien counterA; // monsters
 	private TD_HelpText helpText; // helptext
 	private TD_CounterCredits counterC;
+	private TD_PauseText pauseText;
+	private TD_BuildingText buildingText;
 
 	private LinkedList<A_Square> initRoute;
 	private double[] startPoint;
@@ -49,11 +56,16 @@ class TD_World extends A_World {
 		counterH = new TD_CounterHealth(20, 40);
 		counterC = new TD_CounterCredits(20, 80);
 		helpText = new TD_HelpText(100, 400);
-
+		pauseText = new TD_PauseText(20, 200);
+		buildingText = new TD_BuildingText(20, 160);
 		textObjects.add(counterA);
 		textObjects.add(counterC);
 		textObjects.add(counterH);
 		textObjects.add(helpText);
+		if (isPause)
+			textObjects.add(pauseText);
+		if (isBuilding)
+			textObjects.add(buildingText);
 
 	}
 
@@ -78,10 +90,29 @@ class TD_World extends A_World {
 		// Keyboard events
 		//
 		if (userInput.isKeyPressEvent) {
-			if (userInput.keyPressed == KeyEvent.VK_TAB) {
-				toggleBuilding();
+			if (userInput.keyPressed == KeyEvent.VK_ESCAPE) {
+				togglePause();
+				if (isPause)
+					textObjects.add(pauseText);
+				else
+					textObjects.remove(pauseText);
+				return;
 			}
 		}
+		if (userInput.isKeyPressEvent) {
+			if (userInput.keyPressed == KeyEvent.VK_TAB) {
+				toggleBuilding();
+				if (isBuilding) {
+					if (!textObjects.contains(buildingText))
+						textObjects.add(buildingText);
+				} else {
+					if (textObjects.contains(buildingText))
+						textObjects.remove(buildingText);
+				}
+				return;
+			}
+		}
+
 		if (!isBuilding) {
 			if (userInput.isKeyPressEvent || userInput.isKeyReleaseEvent) {
 				if (userInput.keys.contains(KeyEvent.VK_W) && userInput.keys.size() == 1) {
@@ -141,20 +172,20 @@ class TD_World extends A_World {
 				}
 			}
 		}
-		
+
 		int button = userInput.mouseButton;
 		// mouse button pressed
 		if (userInput.isMouseEvent) {
 			if (button == 1 && !super.isBuilding) {
 				if (timeSinceLastShot > A_Const.AVATAR_SHOOT_DELAY) {
-					TD_Shot shot = new TD_Shot(avatar.x, avatar.y, userInput.mouseMovedX, userInput.mouseMovedY);
+					TD_Shot shot = new TD_Shot(A_Type.PLAYER, avatar.x, avatar.y, userInput.mouseMovedX, userInput.mouseMovedY);
 					gameObjects.add(shot);
 					timeSinceLastShot = 0;
 				}
 			}
 			if ((button == 1 || button == 3) && super.isBuilding) { // left click in building mode
 				A_Square sqr = findSquareAtPos(userInput.mousePressedX, userInput.mousePressedY);
-				if (sqr != null && !sqr.getTaken()) { // if square is not null and square is not taken, prepare to build
+				if (sqr != null && !sqr.getTaken() && !sqr.isWithin(avatar.x, avatar.y)) { // if square is not null and square is not taken, prepare to build
 					sqr.take(); // mark square as taken
 					updateMatrix(); // update matrix with newly marked square
 					LinkedList<Cell> cells = BFS.shortestPath(startend[0], startend[1]); // calculate if new path possible
@@ -175,11 +206,15 @@ class TD_World extends A_World {
 							double[] middle = sqr.getMiddle();
 							switch (button) {
 							case 1:
-								gameObjects.add(new TD_Turret(middle[0], middle[1], 20));
+								TD_Turret turret = new TD_Turret(middle[0], middle[1], 20);
+								gameObjects.add(turret);
+								turretObjects.add(turret);
 								this.counterC.subtract(A_Const.TURRET_COST);
 								break;
 							case 3:
-								gameObjects.add(new TD_Slower(middle[0], middle[1], 20));
+								TD_Slower slower = new TD_Slower(middle[0], middle[1], 20);
+								gameObjects.add(slower);
+								slowerObjects.add(slower);
 								this.counterC.subtract(A_Const.SLOWER_COST);
 								break;
 							default:
@@ -197,7 +232,7 @@ class TD_World extends A_World {
 		//
 		if (userInput.isMousePressed && button == 1 && !super.isBuilding) {
 			if (timeSinceLastShot > A_Const.AVATAR_SHOOT_DELAY) {
-				TD_Shot shot = new TD_Shot(avatar.x, avatar.y, userInput.mouseMovedX, userInput.mouseMovedY);
+				TD_Shot shot = new TD_Shot(A_Type.PLAYER, avatar.x, avatar.y, userInput.mouseMovedX, userInput.mouseMovedY);
 				gameObjects.add(shot);
 				timeSinceLastShot = 0;
 			}
@@ -226,10 +261,9 @@ class TD_World extends A_World {
 	 */
 	protected void spawn(double diffSeconds) {
 		final double INTERVAL = A_Const.SPAWN_INTERVAL;
-
-		timeSinceLastShot += diffSeconds;
-		if (timeSinceLastShot > INTERVAL) {
-			timeSinceLastShot -= INTERVAL;
+		timeSinceLastSpawn += diffSeconds;
+		if (timeSinceLastSpawn > INTERVAL) {
+			timeSinceLastSpawn -= INTERVAL;
 			Random rand = new Random();
 			int n = rand.nextInt(3);
 			TD_AlienAI alien = new TD_AlienAI(A_Type.values()[n + 3], startSquare, initRoute, startPoint[0], startPoint[1]);
@@ -261,7 +295,41 @@ class TD_World extends A_World {
 	/**
 	 * Removes old objects (aka unalived aliens or aliens that reached end destination)
 	 */
-	protected void deleteOldObjects() {
+	protected void deleteOldObjects(double diffSeconds) {
+		for (Iterator<TD_Slower> iter = slowerObjects.iterator(); iter.hasNext();) {
+			TD_Slower slower = iter.next();
+			slower.addTTL(diffSeconds);
+			if (slower.getTTL() > A_Const.TTL) {
+				A_Square sqr = findSquareAtPos((int) slower.x, (int) slower.y);
+				sqr.notTake();
+				updateMatrix(); // update matrix with newly marked square
+				LinkedList<Cell> cells = BFS.shortestPath(startend[0], startend[1]); // calculate if new path possible
+				if (cells != null) {
+					initRoute = A_Square.getPathFromCellList(cells);
+					gameObjects.remove(slower);
+					iter.remove();
+				} else {
+					sqr.take();
+				}
+			}
+		}
+		for (Iterator<TD_Turret> iter = turretObjects.iterator(); iter.hasNext();) {
+			TD_Turret turret = iter.next();
+			turret.addTTL(diffSeconds);
+			if (turret.getTTL() > (A_Const.TTL*3)) {
+				A_Square sqr = findSquareAtPos((int) turret.x, (int) turret.y);
+				sqr.notTake();
+				updateMatrix(); // update matrix with newly marked square
+				LinkedList<Cell> cells = BFS.shortestPath(startend[0], startend[1]); // calculate if new path possible
+				if (cells != null) {
+					initRoute = A_Square.getPathFromCellList(cells);
+					gameObjects.remove(turret);
+					iter.remove();
+				} else {
+					sqr.take();
+				}
+			}
+		}
 		ArrayList<TD_AlienAI> toBeRemoved = new ArrayList<TD_AlienAI>();
 		for (TD_AlienAI alien : alienObjects) {
 			if (this.endSquare.isCloseCenter(alien.x, alien.y)) {

@@ -3,9 +3,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 class TD_Slower extends A_GameObject {
-    protected static final Color COLOR = new Color(0,0, 255);
+    protected static final Color COLOR = new Color(0, 0, 255);
     private double timeSinceLastTick = 0.0;
     private ArrayList<TD_AlienAI> slowedAliens;
+    private double ttl = 0;
 
     public TD_Slower(double x, double y, int r) {
         super(x, y, 0, 0, new B_Shape(r, COLOR, A_Type.SLOWER));
@@ -43,5 +44,13 @@ class TD_Slower extends A_GameObject {
 
     public A_Type type() {
         return A_Type.SLOWER;
+    }
+
+    public void addTTL(double t){
+        ttl += t;
+    }
+
+    public double getTTL(){
+        return ttl;
     }
 }

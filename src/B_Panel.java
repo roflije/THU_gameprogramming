@@ -118,6 +118,7 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 			graphics.setColor(shape.color);
 			graphics.drawPolygon(p);
 			graphics.fillPolygon(p);
+			graphics.drawOval((int) (obj.x - A_Const.TURRET_RANGE), (int) (obj.y - A_Const.TURRET_RANGE), A_Const.TURRET_RANGE * 2, A_Const.TURRET_RANGE * 2);
 			break;
 		}
 		case BULLET:

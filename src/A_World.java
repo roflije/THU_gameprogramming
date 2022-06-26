@@ -9,6 +9,7 @@ abstract class A_World {
 	private A_InputSystem inputSystem;
 	private A_UserInput userInput;
 	protected boolean isBuilding = false;
+	protected boolean isPause = false;
 	private static final int FRAME_MINIMUM_MILLIS = 10;
 
 	// all objects in the game, including the Avatar
@@ -44,9 +45,9 @@ abstract class A_World {
 			userInput = inputSystem.getUserInput();
 			processUserInput(userInput, millisDiff / 1000.0);
 			userInput.clear();
-			
+
 			int gameSize = gameObjects.size();
-			if (!isBuilding) {
+			if (!isBuilding && !isPause) {
 				// move all Objects, maybe collide them etc...
 				for (int i = 0; i < gameSize; i++) {
 					A_GameObject obj = gameObjects.get(i);
@@ -70,13 +71,13 @@ abstract class A_World {
 			for (int i = 0; i < gameSize; i++) {
 				graphicSystem.draw(gameObjects.get(i));
 			}
-			if (isBuilding) {
-				for (int i = 0; i < 25; ++i) {
-					for(int j = 0 ; j < 21 ; ++j) {
-						graphicSystem.draw(squareObjects[i][j]);
-					}
+
+			for (int i = 0; i < 25; ++i) {
+				for (int j = 0; j < 21; ++j) {
+					graphicSystem.draw(squareObjects[i][j]);
 				}
 			}
+
 			// draw all TextObjects
 			for (int i = 0; i < textObjects.size(); i++) {
 				graphicSystem.draw(textObjects.get(i));
@@ -87,7 +88,7 @@ abstract class A_World {
 
 			// create new objects if needed
 			createNewObjects(millisDiff / 1000.0);
-			deleteOldObjects();
+			deleteOldObjects(millisDiff/1000.0);
 		}
 	}
 
@@ -107,6 +108,10 @@ abstract class A_World {
 		this.isBuilding = !this.isBuilding;
 	}
 
+	protected void togglePause() {
+		this.isPause = !this.isPause;
+	}
+
 	protected abstract void init();
 
 	protected abstract void processUserInput(A_UserInput input, double diffSec);
@@ -115,5 +120,5 @@ abstract class A_World {
 
 	protected abstract void gameOver();
 
-	protected abstract void deleteOldObjects();
+	protected abstract void deleteOldObjects(double diffSeconds);
 }

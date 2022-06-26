@@ -4,7 +4,7 @@ class TD_Turret extends A_GameObject {
 	protected static final Color COLOR = new Color(100, 100, 100);
 	private TD_AlienAI target = null;
 	private double timeSinceLastShot = 0.0;
-
+	private double ttl = 0;
 	public TD_Turret(double x, double y, int r) {
 		super(x, y, 0, 0, new B_Shape(r, COLOR, A_Type.TURRET));
 		this.isMoving = false;
@@ -16,7 +16,7 @@ class TD_Turret extends A_GameObject {
 		if (timeSinceLastShot > 1) {
 			target = findNearestMonster();
 			if (target != null) {
-				TD_Shot shot = new TD_Shot(super.x, super.y, target);
+				TD_Shot shot = new TD_Shot(A_Type.TURRET, super.x, super.y, target);
 				TD_World.gameObjects.add(shot);
 				timeSinceLastShot = 0;
 			}
@@ -42,5 +42,13 @@ class TD_Turret extends A_GameObject {
 
 	public A_Type type() {
 		return A_Type.TURRET;
+	}
+
+	public void addTTL(double t) {
+		ttl += t;
+	}
+
+	public double getTTL() {
+		return ttl;
 	}
 }
