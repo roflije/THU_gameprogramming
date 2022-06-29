@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public enum A_Type {
 	PLAYER,
 	TURRET,
@@ -7,6 +5,7 @@ public enum A_Type {
 	ALIEN_BIG,
 	ALIEN_MEDIUM,
 	ALIEN_SMALL,
+	ALIEN_IMMUNE,
 	BULLET,
 	HBG_BULLET,
 	HBG_AMMO;

@@ -5,6 +5,7 @@ class TD_Turret extends A_GameObject {
 	private TD_AlienAI target = null;
 	private double timeSinceLastShot = 0.0;
 	private double ttl = 0;
+
 	public TD_Turret(double x, double y, int r) {
 		super(x, y, 0, 0, new B_Shape(r, COLOR, A_Type.TURRET));
 		this.isMoving = false;

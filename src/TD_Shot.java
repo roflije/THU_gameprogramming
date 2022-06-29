@@ -6,6 +6,7 @@ class TD_Shot extends A_GameObject {
 	private double lifeTime = 1000;
 	private TD_AlienAI target;
 	private A_Type owner;
+
 	public TD_Shot(A_Type owner, double x, double y, double xDest, double yDest) {
 		super(x, y, Math.atan2(yDest - y, xDest - x), 500, SHAPE);
 		this.owner = owner;
@@ -17,11 +18,8 @@ class TD_Shot extends A_GameObject {
 		lifeTime = time;
 		this.isMoving = true;
 		this.owner = owner;
-		
-		if(owner == A_Type.ALIEN_BIG ||
-				owner == A_Type.ALIEN_SMALL ||
-				owner == A_Type.ALIEN_MEDIUM)
-		{
+
+		if (owner == A_Type.ALIEN_BIG || owner == A_Type.ALIEN_SMALL || owner == A_Type.ALIEN_MEDIUM) {
 			SHAPE.color = Color.red;
 		}
 	}
@@ -60,6 +58,12 @@ class TD_Shot extends A_GameObject {
 			else if ((type == A_Type.ALIEN_SMALL || type == A_Type.ALIEN_MEDIUM || type == A_Type.ALIEN_BIG) && obj.isLiving) {
 				TD_AlienAI alien = (TD_AlienAI) obj;
 				alien.hasBeenShot();
+				this.isLiving = false;
+			} else if ((type == A_Type.ALIEN_IMMUNE && this.owner == A_Type.PLAYER)) {
+				TD_AlienAI alien = (TD_AlienAI) obj;
+				alien.hasBeenShot();
+				this.isLiving = false;
+			} else if ((type == A_Type.ALIEN_IMMUNE && this.owner == A_Type.TURRET)){
 				this.isLiving = false;
 			}
 		}

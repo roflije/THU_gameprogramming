@@ -27,20 +27,24 @@ class TD_AlienAI extends A_GameObject {
 		this.type = type;
 		switch (this.type) {
 			case ALIEN_SMALL:
-				this.life = 10;
+				this.life = 15;
 				this.credits = 50;
 				this.speed = 150;
 				break;
 			case ALIEN_MEDIUM:
-				this.life = 30;
+				this.life = 40;
 				this.credits = 100;
 				this.speed = 75;
 				break;
 			case ALIEN_BIG:
-				this.life = 60;
+				this.life = 80;
 				this.credits = 200;
 				this.speed = 25;
 				break;
+			case ALIEN_IMMUNE:
+				this.life = 40;
+				this.credits = 100;
+				this.speed = 75;
 			default:
 				break;
 		}

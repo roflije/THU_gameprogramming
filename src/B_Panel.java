@@ -94,6 +94,16 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 			graphics.drawOval(x, y, d * 2, d * 2);
 			break;
 		}
+		case ALIEN_IMMUNE: {
+			int x = (int) (obj.x - shape.radius());
+			int y = (int) (obj.y - shape.radius());
+			int d = (int) (shape.radius() * 2);
+			graphics.setColor(Color.YELLOW);
+			graphics.fillOval(x, y, d, d);
+			graphics.setColor(Color.DARK_GRAY);
+			graphics.drawOval(x, y, d, d);
+			break;
+		}
 		case TURRET: {
 			int x1 = (int) (obj.x - shape.radius());
 			int y1 = (int) (obj.y + shape.radius());
