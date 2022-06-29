@@ -121,7 +121,7 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 			graphics.drawOval((int) (obj.x - A_Const.TURRET_RANGE), (int) (obj.y - A_Const.TURRET_RANGE), A_Const.TURRET_RANGE * 2, A_Const.TURRET_RANGE * 2);
 			break;
 		}
-		case BULLET:
+		case BULLET:{
 			int x = (int) (obj.x - shape.radius() / 2);
 			int y = (int) (obj.y - shape.radius() / 2);
 			int d = (int) (shape.radius() * 2);
@@ -130,10 +130,36 @@ class B_Panel extends JPanel implements A_GraphicSystem {
 			graphics.setColor(Color.DARK_GRAY);
 			graphics.drawOval(x, y, d / 2, d / 2);
 			break;
+			
+		}
+		
+		
+		case HBG_BULLET: {
+			int x = (int) (obj.x - shape.radius() / 2);
+			int y = (int) (obj.y - shape.radius() / 2);
+			int d = (int) (shape.radius() * 2);
+			graphics.setColor(shape.color);
+			graphics.fillOval(x, y, d / 2, d / 2);
+			graphics.setColor(Color.DARK_GRAY);
+			graphics.drawOval(x, y, d / 2, d / 2);
+			break;
+		}
+		case HBG_AMMO: {
+			int x = (int) (obj.x - shape.radius());
+			int y = (int) (obj.y - shape.radius());
+			int d = (int) (shape.radius() * 2);
+			graphics.setColor(shape.color);
+			graphics.fillOval(x, y, d, d);
+			graphics.setColor(Color.DARK_GRAY);
+			graphics.drawOval(x, y, d, d);
+			break;
+		}
 		default:
 			break;
 
 		}
+		
+		
 
 	}
 

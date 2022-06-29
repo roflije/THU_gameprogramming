@@ -6,9 +6,7 @@ public class TD_Avatar extends A_GameObject {
 	private TD_CounterMonsterHealth counter;
 	
 	public TD_Avatar(double x, double y) {
-		super(x, y, 0, 0, SHAPE);
-        counter = new TD_CounterMonsterHealth((int)x,(int)y);
-		
+		super(x, y, 0, 0, SHAPE);		
 	}
 
 	public void move(double diffSeconds) {
@@ -24,6 +22,11 @@ public class TD_Avatar extends A_GameObject {
 			if (obj.type() == A_Type.TURRET || obj.type() == A_Type.SLOWER) {
 				this.moveBack();
 			}
+			
+			  else if(obj.type()==A_Type.HBG_AMMO && TD_World.ammoHBG < 3 )
+			  { ((TD_World)world).addAmmoHBG();
+			    obj.isLiving=false;
+			  }
 		}
 	}
 

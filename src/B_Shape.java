@@ -21,6 +21,8 @@ class B_Shape implements A_Shape {
 		type = t;
 	}
 	
+	
+	
 
 	public final double radius() {
 		return radius;
@@ -29,6 +31,10 @@ class B_Shape implements A_Shape {
 	public  A_Type  type() {
 		return type;
 	}
-	
+
+    public void setColor(Color color)
+    {
+       this.color = color;    	
+    }
  
 }
