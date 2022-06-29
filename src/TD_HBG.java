@@ -9,7 +9,7 @@ class TD_HBG extends A_GameObject {
 	private TD_AlienAI target;
 	private A_Type owner;
 	public TD_HBG(A_Type owner, double x, double y, double xDest, double yDest) {
-		super(x, y, Math.atan2(yDest - y, xDest - x), 150, SHAPE);
+		super(x, y, Math.atan2(yDest - y, xDest - x), 250, SHAPE);
 		this.owner = owner;
 		this.isMoving = true;
 	}
@@ -90,12 +90,12 @@ class TD_HBG extends A_GameObject {
 	  }
 	
 	private boolean isNearby(TD_AlienAI alien) {
-        return this.x - A_Const.HBG_RADIUS < alien.x && alien.x < this.x + A_Const.TURRET_RANGE && this.y - A_Const.TURRET_RANGE < alien.y && alien.y < this.y + A_Const.TURRET_RANGE;
+        return this.x - A_Const.HBG_RADIUS < alien.x && alien.x < this.x + A_Const.HBG_RADIUS && this.y - A_Const.HBG_RADIUS < alien.y && alien.y < this.y + A_Const.HBG_RADIUS;
     }
 
 
 	public final A_Type type() {
-		return A_Type.HBD_BULLET;
+		return A_Type.HBG_BULLET;
 	}
 	
 

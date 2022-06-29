@@ -8,5 +8,6 @@ public enum A_Type {
 	ALIEN_MEDIUM,
 	ALIEN_SMALL,
 	BULLET,
-	HBD_BULLET;
+	HBG_BULLET,
+	HBG_AMMO;
 }

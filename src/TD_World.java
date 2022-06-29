@@ -10,7 +10,7 @@ class TD_World extends A_World {
 	public static ArrayList<TD_AlienAI> alienObjects = new ArrayList<TD_AlienAI>(); // stores monsters
 	public static ArrayList<TD_Slower> slowerObjects = new ArrayList<TD_Slower>();
 	public static ArrayList<TD_Turret> turretObjects = new ArrayList<TD_Turret>();
-
+    public static int ammoHBG = 0;
 	private double timeSinceLastShot = 0;
 	private double timeSinceLastSpawn = 0;
 
@@ -20,13 +20,15 @@ class TD_World extends A_World {
 	private TD_CounterCredits counterC;
 	private TD_PauseText pauseText;
 	private TD_BuildingText buildingText;
-
+	private TD_CounterHBG ammoHBGText;
 	private LinkedList<A_Square> initRoute;
 	private double[] startPoint;
 	private A_Square startSquare;
 	private A_Square endSquare;
 	private double lifeHelpText = 10.0;
 	int[][] startend = { { 0, 10 }, { 24, 10 } };
+	private double spawnHBG = 0.0;
+	
 
 	protected void init() {
 		// create square objects for map grid
@@ -53,6 +55,7 @@ class TD_World extends A_World {
 		spawn(0);
 
 		counterA = new TD_CounterAlien(20, 120);
+		ammoHBGText = new TD_CounterHBG(20,160);
 		counterH = new TD_CounterHealth(20, 40);
 		counterC = new TD_CounterCredits(20, 80);
 		helpText = new TD_HelpText(100, 400);
@@ -62,6 +65,7 @@ class TD_World extends A_World {
 		textObjects.add(counterC);
 		textObjects.add(counterH);
 		textObjects.add(helpText);
+		textObjects.add(ammoHBGText);
 		if (isPause)
 			textObjects.add(pauseText);
 		if (isBuilding)
@@ -237,12 +241,14 @@ class TD_World extends A_World {
 				timeSinceLastShot = 0;
 			}
 		}
-		
-		if (userInput.isMousePressed && button == 3 && !super.isBuilding) {
+
+		if (userInput.isMousePressed && button == 3 && !super.isBuilding && ammoHBG > 0) {
 			if (timeSinceLastShot > A_Const.AVATAR_SHOOT_DELAY) {
 				TD_HBG shot = new TD_HBG(A_Type.PLAYER, avatar.x, avatar.y, userInput.mouseMovedX, userInput.mouseMovedY);
 				gameObjects.add(shot);
 				timeSinceLastShot = 0;
+				--ammoHBG;
+				ammoHBGText.setNumber(ammoHBG);
 			}
 		}
 	}
@@ -281,6 +287,73 @@ class TD_World extends A_World {
 		}
 	}
 
+
+	private void createAmmoHBG(double diffSeconds)
+	{
+		final double INTERVAL = A_Const.HBG_SPAWN;
+
+		spawnHBG += diffSeconds;
+		if(spawnHBG>INTERVAL)
+		{
+			spawnHBG -= INTERVAL;
+
+			// create more Ammo
+			int x =  (int) (20+Math.random()*960);
+			int y = (int) (20+Math.random()*760);
+
+			A_Square sqr = findSquareAtPos(x,y);
+			if (sqr != null && !sqr.getTaken() && !sqr.isWithin(avatar.x, avatar.y)) { // if square is not null and square is not taken, prepare to build
+				sqr.take(); // mark square as taken
+				updateMatrix(); // update matrix with newly marked square
+				LinkedList<Cell> cells = BFS.shortestPath(startend[0], startend[1]); // calculate if new path possible
+				if (cells == null) { // if no path (cannot build), free the square
+					sqr.notTake();
+				}  
+				else {
+					this.initRoute = A_Square.getPathFromCellList(cells); // update initial route for monsters with new route
+					boolean cannotCreate = false;
+					for (TD_AlienAI a : alienObjects) { // check if can create path for every alien that is on the map already
+						if (!a.updatePath()) // sqr.isWithin(a.x, a.y)
+							cannotCreate = true; // if not, set flag
+					}
+					if (cannotCreate) { // if some alien cannot reach destination, free the square
+						sqr.notTake();
+					} else { // else spawn tower
+						double[] middle = sqr.getMiddle();
+
+
+						// if too close to Avatar, cancel
+						//						double dx = x-avatar.x;
+						//						double dy = y-avatar.y;
+						//						if(dx*dx+dy*dy < 200*200) 
+						//						{ spawnHBG = INTERVAL;
+						//						return;
+						//						}
+
+
+						// if collisions occur, cancel
+						TD_AmmoHBG ammo = new TD_AmmoHBG(middle[0],middle[1]);
+						//						A_GameObjectList list = A_GameObject.physicsSystem.getCollisions(ammo);
+						//						if(list.size()!=0)
+						//						{ spawnHBG = INTERVAL;
+						//						return;
+						//						}	  
+
+						// else add zombie to world
+						gameObjects.add(ammo);
+						ammoHBGText.setNumber(ammoHBG);      
+					}
+				}
+			}
+		}
+	}
+
+	public void addAmmoHBG() {
+		if(ammoHBG<3) { ammoHBG++; }
+		ammoHBGText.setNumber(ammoHBG);
+
+	}
+
 	/**
 	 * Create new objects
 	 * 
@@ -289,6 +362,7 @@ class TD_World extends A_World {
 	protected void createNewObjects(double diffSeconds) {
 		if (!isBuilding) {
 			spawn(diffSeconds);
+			createAmmoHBG(diffSeconds);
 			// delete HelpText after ... seconds
 			if (helpText != null) {
 				lifeHelpText -= diffSeconds;
@@ -367,4 +441,6 @@ class TD_World extends A_World {
 		while (true)
 			;
 	}
+
+
 }
