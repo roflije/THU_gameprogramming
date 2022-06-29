@@ -17,6 +17,13 @@ class TD_Shot extends A_GameObject {
 		lifeTime = time;
 		this.isMoving = true;
 		this.owner = owner;
+		
+		if(owner == A_Type.ALIEN_BIG ||
+				owner == A_Type.ALIEN_SMALL ||
+				owner == A_Type.ALIEN_MEDIUM)
+		{
+			SHAPE.color = Color.red;
+		}
 	}
 
 	public TD_Shot(A_Type owner, double x, double y, TD_AlienAI target) {

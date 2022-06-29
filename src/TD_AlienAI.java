@@ -101,6 +101,14 @@ class TD_AlienAI extends A_GameObject {
 			return;
 		}
 	}
+	
+	public void hasBeenBlasted() {
+		life -= 99999;
+		if (life <= 0) {
+			this.isLiving = false;
+			return;
+		}
+	}
 
 	public int getCredits() {
 		return credits;

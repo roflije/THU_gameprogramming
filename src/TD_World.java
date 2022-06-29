@@ -237,6 +237,14 @@ class TD_World extends A_World {
 				timeSinceLastShot = 0;
 			}
 		}
+		
+		if (userInput.isMousePressed && button == 3 && !super.isBuilding) {
+			if (timeSinceLastShot > A_Const.AVATAR_SHOOT_DELAY) {
+				TD_HBG shot = new TD_HBG(A_Type.PLAYER, avatar.x, avatar.y, userInput.mouseMovedX, userInput.mouseMovedY);
+				gameObjects.add(shot);
+				timeSinceLastShot = 0;
+			}
+		}
 	}
 
 	/**
