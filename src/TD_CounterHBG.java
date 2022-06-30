@@ -4,7 +4,7 @@ class TD_CounterHBG extends A_TextObject {
 	private int number = 0;
 
 	public TD_CounterHBG(int x, int y) {
-		super(x, y, new B_Shape(0, new Color(255,0,0)));
+		super(x, y, new B_Shape(0, new Color(255, 0, 0)));
 	}
 
 	public String toString() {
@@ -17,7 +17,7 @@ class TD_CounterHBG extends A_TextObject {
 		number = n;
 	}
 
-	public int getNumber(){
+	public int getNumber() {
 		return number;
 	}
 }

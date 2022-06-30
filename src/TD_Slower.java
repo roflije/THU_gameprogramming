@@ -46,11 +46,11 @@ class TD_Slower extends A_GameObject {
         return A_Type.SLOWER;
     }
 
-    public void addTTL(double t){
+    public void addTTL(double t) {
         ttl += t;
     }
 
-    public double getTTL(){
+    public double getTTL() {
         return ttl;
     }
 }

@@ -10,10 +10,9 @@ class TD_World extends A_World {
 	public static ArrayList<TD_AlienAI> alienObjects = new ArrayList<TD_AlienAI>(); // stores monsters
 	public static ArrayList<TD_Slower> slowerObjects = new ArrayList<TD_Slower>();
 	public static ArrayList<TD_Turret> turretObjects = new ArrayList<TD_Turret>();
-     public static int ammoHBG = 0;
+	public static int ammoHBG = 0;
 	private double timeSinceLastShot = 0;
 	private double timeSinceLastSpawn = 0;
-
 	private TD_CounterHealth counterH; // health
 	private TD_CounterAlien counterA; // monsters
 	private TD_HelpText helpText; // helptext
@@ -28,7 +27,6 @@ class TD_World extends A_World {
 	private double lifeHelpText = 10.0;
 	int[][] startend = { { 0, 10 }, { 24, 10 } };
 	private double spawnHBG = 0.0;
-	
 
 	protected void init() {
 		// create square objects for map grid
@@ -55,12 +53,12 @@ class TD_World extends A_World {
 		spawn(0);
 
 		counterA = new TD_CounterAlien(20, 120);
-		ammoHBGText = new TD_CounterHBG(20,160);
+		ammoHBGText = new TD_CounterHBG(20, 160);
 		counterH = new TD_CounterHealth(20, 40);
 		counterC = new TD_CounterCredits(20, 80);
 		helpText = new TD_HelpText(100, 400);
-		pauseText = new TD_PauseText(20, 200);
-		buildingText = new TD_BuildingText(20, 160);
+		pauseText = new TD_PauseText(20, 240);
+		buildingText = new TD_BuildingText(20, 200);
 		textObjects.add(counterA);
 		textObjects.add(counterC);
 		textObjects.add(counterH);
@@ -279,7 +277,7 @@ class TD_World extends A_World {
 		if (timeSinceLastSpawn > INTERVAL) {
 			timeSinceLastSpawn -= INTERVAL;
 			Random rand = new Random();
-			int n = rand.nextInt(3);
+			int n = rand.nextInt(4);
 			TD_AlienAI alien = new TD_AlienAI(A_Type.values()[n + 3], startSquare, initRoute, startPoint[0], startPoint[1]);
 			counterA.increment();
 			gameObjects.add(alien);
@@ -287,69 +285,50 @@ class TD_World extends A_World {
 		}
 	}
 
-
-	private void createAmmoHBG(double diffSeconds)
-	{
+	private void createAmmoHBG(double diffSeconds) {
 		final double INTERVAL = A_Const.HBG_SPAWN;
-
-		spawnHBG += diffSeconds;
-		if(spawnHBG>INTERVAL)
-		{
-			spawnHBG -= INTERVAL;
-
-			// create more Ammo
-			int x =  (int) (20+Math.random()*960);
-			int y = (int) (20+Math.random()*760);
-
-			A_Square sqr = findSquareAtPos(x,y);
-			if (sqr != null && !sqr.getTaken() && !sqr.isWithin(avatar.x, avatar.y)) { // if square is not null and square is not taken, prepare to build
-				sqr.take(); // mark square as taken
-				updateMatrix(); // update matrix with newly marked square
-				LinkedList<Cell> cells = BFS.shortestPath(startend[0], startend[1]); // calculate if new path possible
-				if (cells == null) { // if no path (cannot build), free the square
-					sqr.notTake();
-				}  
-				else {
-					this.initRoute = A_Square.getPathFromCellList(cells); // update initial route for monsters with new route
-					boolean cannotCreate = false;
-					for (TD_AlienAI a : alienObjects) { // check if can create path for every alien that is on the map already
-						if (!a.updatePath()) // sqr.isWithin(a.x, a.y)
-							cannotCreate = true; // if not, set flag
-					}
-					if (cannotCreate) { // if some alien cannot reach destination, free the square
+		try {
+			spawnHBG += diffSeconds;
+			if (spawnHBG > INTERVAL) {
+				spawnHBG -= INTERVAL;
+				// create more Ammo
+				int x = (int) (20 + Math.random() * 960);
+				int y = (int) (20 + Math.random() * 760);
+				A_Square sqr = findSquareAtPos(x, y);
+				if (sqr != null && !sqr.getTaken() && !sqr.isWithin(avatar.x, avatar.y)) { // if square is not null and square is not taken, prepare to build
+					sqr.take(); // mark square as taken
+					updateMatrix(); // update matrix with newly marked square
+					LinkedList<Cell> cells = BFS.shortestPath(startend[0], startend[1]); // calculate if new path possible
+					if (cells == null) { // if no path (cannot build), free the square
 						sqr.notTake();
-					} else { // else spawn tower
-						double[] middle = sqr.getMiddle();
-
-
-						// if too close to Avatar, cancel
-						//						double dx = x-avatar.x;
-						//						double dy = y-avatar.y;
-						//						if(dx*dx+dy*dy < 200*200) 
-						//						{ spawnHBG = INTERVAL;
-						//						return;
-						//						}
-
-
-						// if collisions occur, cancel
-						TD_AmmoHBG ammo = new TD_AmmoHBG(middle[0],middle[1]);
-						//						A_GameObjectList list = A_GameObject.physicsSystem.getCollisions(ammo);
-						//						if(list.size()!=0)
-						//						{ spawnHBG = INTERVAL;
-						//						return;
-						//						}	  
-
-						// else add zombie to world
-						gameObjects.add(ammo);
-						ammoHBGText.setNumber(ammoHBG);      
+					} else {
+						this.initRoute = A_Square.getPathFromCellList(cells); // update initial route for monsters with new route
+						boolean cannotCreate = false;
+						for (TD_AlienAI a : alienObjects) { // check if can create path for every alien that is on the map already
+							if (!a.updatePath()) // sqr.isWithin(a.x, a.y)
+								cannotCreate = true; // if not, set flag
+						}
+						if (cannotCreate) { // if some alien cannot reach destination, free the square
+							sqr.notTake();
+						} else { // else spawn tower
+							double[] middle = sqr.getMiddle();
+							// if collisions occur, cancel
+							TD_AmmoHBG ammo = new TD_AmmoHBG(middle[0], middle[1]);
+							// else add zombie to world
+							gameObjects.add(ammo);
+							ammoHBGText.setNumber(ammoHBG);
+						}
 					}
 				}
 			}
+		} catch (Exception e) {
 		}
 	}
 
 	public void addAmmoHBG() {
-		if(ammoHBG<3) { ammoHBG++; }
+		if (ammoHBG < 3) {
+			ammoHBG++;
+		}
 		ammoHBGText.setNumber(ammoHBG);
 
 	}
@@ -398,7 +377,7 @@ class TD_World extends A_World {
 		for (Iterator<TD_Turret> iter = turretObjects.iterator(); iter.hasNext();) {
 			TD_Turret turret = iter.next();
 			turret.addTTL(diffSeconds);
-			if (turret.getTTL() > (A_Const.TTL*3)) {
+			if (turret.getTTL() > (A_Const.TTL * 2)) {
 				A_Square sqr = findSquareAtPos((int) turret.x, (int) turret.y);
 				sqr.notTake();
 				updateMatrix(); // update matrix with newly marked square
@@ -441,6 +420,5 @@ class TD_World extends A_World {
 		while (true)
 			;
 	}
-
 
 }
