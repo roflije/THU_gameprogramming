@@ -79,7 +79,7 @@ class TD_HBG extends A_GameObject {
 	  private void disintegrate(TD_AlienAI alien)
 	  {
 		  
-		  for(int i=0; i<50; i++)
+		  for(int i=0; i<25; i++)
 		    {
 		      double alfa = Math.random()*Math.PI*2;
 		      double speed = 50+Math.random()*600;
