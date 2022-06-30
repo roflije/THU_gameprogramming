@@ -13,7 +13,6 @@ class TD_World extends A_World {
 	public static int ammoHBG = 0;
 	private double timeSinceLastShot = 0;
 	private double timeSinceLastSpawn = 0;
-
 	private TD_CounterHealth counterH; // health
 	private TD_CounterAlien counterA; // monsters
 	private TD_HelpText helpText; // helptext

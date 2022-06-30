@@ -68,18 +68,16 @@ class TD_HBG extends A_GameObject {
 			if (isNearby(alien)) {
 				disintegrate(alien);
 				alien.hasBeenBlasted();
-
 			}
 		}
 	}
-
 	private void disintegrate(TD_AlienAI alien) {
 
 		for (int i = 0; i < 50; i++) {
 			double alfa = Math.random() * Math.PI * 2;
 			double speed = 50 + Math.random() * 600;
 			double time = 0.1 + Math.random() * 0.2;
-			TD_Shot alienGuts = new TD_Shot(alien.type(), alien.x, alien.y, alfa, speed, time);
+			TD_AlienPieces alienGuts = new TD_AlienPieces(alien.type(), alien.x, alien.y, alfa, speed, time);
 			TD_World.gameObjects.add(alienGuts);
 		}
 	}
